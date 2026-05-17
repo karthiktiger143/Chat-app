@@ -247,8 +247,11 @@ margin-top:10px;
 
 <div class="room-info">
 
-<div class="room-name">
-🔥 Tirunelveli Room
+<div
+class="room-name"
+id="roomName"
+>
+🔥 Room
 </div>
 
 <div class="room-online">
@@ -470,6 +473,17 @@ onSnapshot
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+/* ROOM NAME */
+
+document.getElementById(
+"roomName"
+).innerHTML =
+"🔥 " +
+localStorage.getItem(
+"roomName"
+) +
+" Room";
+
 /* FIREBASE */
 
 const firebaseConfig = {
@@ -525,8 +539,15 @@ localStorage.getItem(
 await addDoc(
 collection(db,"groupComments"),
 {
+room:
+localStorage.getItem(
+"roomName"
+),
+
 user:user,
+
 msg:msg,
+
 time:Date.now()
 }
 );
@@ -554,6 +575,13 @@ snapshot.forEach((doc)=>{
 let data =
 doc.data();
 
+if(
+data.room ==
+localStorage.getItem(
+"roomName"
+)
+){
+
 html += `
 
 <div class="comment">
@@ -564,6 +592,8 @@ ${data.msg}
 </div>
 
 `;
+
+}
 
 });
 
@@ -606,7 +636,7 @@ alert(
 
 }
 
-/* PROFILE POPUP */
+/* PROFILE */
 
 window.openProfile =
 function(name){
@@ -630,8 +660,6 @@ document.getElementById(
 
 }
 
-/* REQUEST */
-
 window.sendRequest =
 function(){
 
@@ -640,8 +668,6 @@ alert(
 );
 
 }
-
-/* FOLLOW */
 
 window.followUser =
 function(){
