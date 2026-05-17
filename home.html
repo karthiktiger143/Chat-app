@@ -32,6 +32,7 @@ align-items:center;
 border-bottom:1px solid #222;
 position:sticky;
 top:0;
+z-index:1000;
 }
 
 .profile{
@@ -143,6 +144,7 @@ border-top:1px solid #222;
 text-align:center;
 font-size:14px;
 color:white;
+cursor:pointer;
 }
 
 .nav span{
@@ -164,6 +166,7 @@ border-radius:10px;
 color:white;
 font-size:14px;
 cursor:pointer;
+z-index:1001;
 }
 
 </style>
@@ -225,7 +228,7 @@ placeholder="Search chats..."
 
 <div class="chat-list">
 
-<!-- KARTHI CHAT -->
+<!-- KARTHI -->
 
 <div
 class="chat-box"
@@ -256,7 +259,7 @@ Hello 👋
 
 </div>
 
-<!-- ARUN CHAT -->
+<!-- ARUN -->
 
 <div
 class="chat-box"
@@ -287,7 +290,7 @@ Typing...
 
 </div>
 
-<!-- VICKY CHAT -->
+<!-- VICKY -->
 
 <div
 class="chat-box"
@@ -324,22 +327,36 @@ Yesterday
 
 <div class="bottom-nav">
 
+<!-- CHATS -->
+
 <div class="nav">
 <span>💬</span>
 Chats
 </div>
 
-<div class="nav">
+<!-- GROUPS -->
+
+<div
+class="nav"
+onclick="window.location.href='group.html'"
+>
 <span>👥</span>
 Groups
 </div>
+
+<!-- CALLS -->
 
 <div class="nav">
 <span>📞</span>
 Calls
 </div>
 
-<div class="nav">
+<!-- SETTINGS -->
+
+<div
+class="nav"
+onclick="window.location.href='profile.html'"
+>
 <span>⚙️</span>
 Settings
 </div>
