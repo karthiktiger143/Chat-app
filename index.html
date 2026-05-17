@@ -1,99 +1,73 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NammaApp Login</title>
+  <title>NammaApp</title>
 
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Segoe UI',sans-serif;
-        }
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-        body{
-            background:#000;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-        }
+  <style>
+    body{
+      background:#000;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      font-family:sans-serif;
+    }
 
-        .box{
-            width:90%;
-            max-width:400px;
-            background:#111;
-            padding:30px;
-            border-radius:25px;
-        }
+    .box{
+      background:#111;
+      padding:30px;
+      border-radius:20px;
+      width:300px;
+    }
 
-        h1{
-            color:white;
-            margin-bottom:25px;
-            font-size:40px;
-        }
+    h1{
+      color:white;
+      margin-bottom:20px;
+    }
 
-        input{
-            width:100%;
-            padding:15px;
-            margin-top:15px;
-            border:none;
-            border-radius:12px;
-            font-size:18px;
-            outline:none;
-        }
+    input{
+      width:100%;
+      padding:15px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      font-size:18px;
+    }
 
-        button{
-            width:100%;
-            padding:15px;
-            margin-top:20px;
-            border:none;
-            border-radius:12px;
-            background:#119dff;
-            color:white;
-            font-size:20px;
-            cursor:pointer;
-        }
+    button{
+      width:100%;
+      padding:15px;
+      margin-top:15px;
+      border:none;
+      border-radius:10px;
+      background:#2196f3;
+      color:white;
+      font-size:20px;
+    }
 
-        button:hover{
-            opacity:0.9;
-        }
-    </style>
+    #home{
+      display:none;
+      color:white;
+      text-align:center;
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="box">
-        <h1>NammaApp</h1>
+<div class="box" id="authBox">
+  <h1>NammaApp</h1>
 
-        <input type="email" id="email" placeholder="Enter Gmail">
+  <input type="email" id="email" placeholder="Enter Email">
+  <input type="password" id="password" placeholder="Enter Password">
 
-        <input type="password" id="password" placeholder="Enter Password">
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+</div>
 
-        <button onclick="login()">Login</button>
-    </div>
-
-    <script>
-        function login(){
-
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-
-            if(email === "test@gmail.com" && password === "123456"){
-
-                alert("Login Success ✅");
-
-                window.location.href = "https://google.com";
-
-            } else {
-
-                alert("Wrong Email or Password ❌");
-
-            }
-        }
-    </script>
-
-</body>
-</html>
+<div class="box" id="username
