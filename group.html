@@ -235,6 +235,48 @@ background:red;
 margin-top:10px;
 }
 
+/* SEAT REQUEST POPUP */
+
+#seatRequestPopup{
+display:none;
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#111;
+padding:20px;
+border-radius:20px;
+width:90%;
+z-index:99999;
+border:1px solid #333;
+}
+
+.request-btns{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+.accept-btn{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+background:#00aa55;
+color:white;
+font-size:16px;
+}
+
+.reject-btn{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+background:red;
+color:white;
+font-size:16px;
+}
+
 </style>
 
 </head>
@@ -458,6 +500,44 @@ Close
 
 </div>
 
+<!-- SEAT REQUEST POPUP -->
+
+<div id="seatRequestPopup">
+
+<h3>
+🎤 Seat Request
+</h3>
+
+<div
+id="requestUser"
+style="
+margin-top:15px;
+font-size:18px;
+"
+>
+User wants to join seat
+</div>
+
+<div class="request-btns">
+
+<button
+class="accept-btn"
+onclick="acceptSeat()"
+>
+Accept
+</button>
+
+<button
+class="reject-btn"
+onclick="rejectSeat()"
+>
+Reject
+</button>
+
+</div>
+
+</div>
+
 <script type="module">
 
 import { initializeApp }
@@ -630,9 +710,53 @@ alert(
 window.joinSeat =
 function(){
 
-alert(
-"You joined speaker seat 🔥"
+let user =
+localStorage.getItem(
+"username"
 );
+
+document.getElementById(
+"seatRequestPopup"
+).style.display =
+"block";
+
+document.getElementById(
+"requestUser"
+).innerHTML =
+user +
+" wants to join seat";
+
+}
+
+/* ACCEPT */
+
+window.acceptSeat =
+function(){
+
+alert(
+"Seat Request Accepted 🔥"
+);
+
+document.getElementById(
+"seatRequestPopup"
+).style.display =
+"none";
+
+}
+
+/* REJECT */
+
+window.rejectSeat =
+function(){
+
+alert(
+"Seat Request Rejected ❌"
+);
+
+document.getElementById(
+"seatRequestPopup"
+).style.display =
+"none";
 
 }
 
