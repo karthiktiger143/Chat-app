@@ -1,265 +1,331 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NammaApp Dashboard</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NammaApp Home</title>
 
-  <style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:sans-serif;
-    }
+<style>
 
-    body{
-      background:#000;
-      color:white;
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
 
-    .topbar{
-      width:100%;
-      padding:15px;
-      background:#111;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      border-bottom:1px solid #222;
-    }
+body{
+background:#000;
+color:white;
+}
 
-    .profile{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
+.topbar{
+width:100%;
+padding:15px;
+background:#111;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #222;
+}
 
-    .profile img{
-      width:45px;
-      height:45px;
-      border-radius:50%;
-      object-fit:cover;
-    }
+.profile{
+display:flex;
+align-items:center;
+gap:12px;
+}
 
-    .online{
-      color:#00ff66;
-      font-size:14px;
-    }
+.profile img{
+width:50px;
+height:50px;
+border-radius:50%;
+}
 
-    .search{
-      width:100%;
-      padding:15px;
-      background:#000;
-    }
+.username{
+font-size:20px;
+font-weight:bold;
+}
 
-    .search input{
-      width:100%;
-      padding:15px;
-      border:none;
-      border-radius:12px;
-      background:#111;
-      color:white;
-      font-size:16px;
-    }
+.status{
+font-size:13px;
+color:#00ff66;
+}
 
-    .chat-list{
-      padding:10px;
-      margin-bottom:80px;
-    }
+.search{
+padding:15px;
+}
 
-    .chat{
-      width:100%;
-      background:#111;
-      padding:15px;
-      border-radius:15px;
-      margin-top:10px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
+.search input{
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#111;
+color:white;
+font-size:16px;
+}
 
-    .chat-left{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
+.section-title{
+padding-left:15px;
+padding-top:5px;
+font-size:18px;
+font-weight:bold;
+}
 
-    .chat-left img{
-      width:50px;
-      height:50px;
-      border-radius:50%;
-    }
+.chat-list{
+padding:15px;
+margin-bottom:90px;
+}
 
-    .name{
-      font-size:18px;
-      font-weight:bold;
-    }
+.chat-box{
+background:#111;
+padding:15px;
+border-radius:18px;
+margin-top:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
 
-    .msg{
-      font-size:14px;
-      color:#aaa;
-      margin-top:3px;
-    }
+.chat-left{
+display:flex;
+align-items:center;
+gap:12px;
+}
 
-    .time{
-      color:#888;
-      font-size:12px;
-    }
+.chat-left img{
+width:55px;
+height:55px;
+border-radius:50%;
+}
 
-    .bottom-nav{
-      width:100%;
-      height:70px;
-      background:#111;
-      position:fixed;
-      bottom:0;
-      left:0;
-      display:flex;
-      justify-content:space-around;
-      align-items:center;
-      border-top:1px solid #222;
-    }
+.chat-name{
+font-size:18px;
+font-weight:bold;
+}
 
-    .nav-btn{
-      text-align:center;
-      color:white;
-      font-size:14px;
-    }
+.chat-msg{
+font-size:14px;
+color:#aaa;
+margin-top:3px;
+}
 
-    .nav-btn span{
-      display:block;
-      font-size:24px;
-      margin-bottom:3px;
-    }
+.time{
+font-size:12px;
+color:#888;
+}
 
-  </style>
+.bottom-nav{
+width:100%;
+height:75px;
+background:#111;
+position:fixed;
+bottom:0;
+left:0;
+display:flex;
+justify-content:space-around;
+align-items:center;
+border-top:1px solid #222;
+}
+
+.nav{
+text-align:center;
+font-size:14px;
+}
+
+.nav span{
+display:block;
+font-size:24px;
+margin-bottom:4px;
+}
+
+.logout-btn{
+position:fixed;
+top:15px;
+right:15px;
+background:red;
+border:none;
+padding:10px 15px;
+border-radius:10px;
+color:white;
+font-size:14px;
+}
+
+</style>
+
 </head>
 
 <body>
 
+<button
+class="logout-btn"
+onclick="logout()"
+>
+Logout
+</button>
+
 <div class="topbar">
 
-  <div class="profile">
+<div class="profile">
 
-    <img src="https://i.imgur.com/6VBx3io.png">
+<img src="https://i.imgur.com/6VBx3io.png">
 
-    <div>
+<div>
 
-      <h3 id="username">
-      User ID
-      </h3>
+<div
+class="username"
+id="username"
+>
+User
+</div>
 
-      <div class="online">
-      Online
-      </div>
+<div class="status">
+Online
+</div>
 
-    </div>
+</div>
 
-  </div>
+</div>
 
-  <h2>💬</h2>
+<h2>💬</h2>
 
 </div>
 
 <div class="search">
 
-  <input
-  type="text"
-  placeholder="Search User ID..."
-  >
+<input
+type="text"
+placeholder="Search chats..."
+>
 
+</div>
+
+<div class="section-title">
+Recent Chats
 </div>
 
 <div class="chat-list">
 
-  <div class="chat">
+<div class="chat-box">
 
-    <div class="chat-left">
+<div class="chat-left">
 
-      <img src="https://i.imgur.com/6VBx3io.png">
+<img src="https://i.imgur.com/6VBx3io.png">
 
-      <div>
+<div>
 
-        <div class="name">
-        Arun_07
-        </div>
+<div class="chat-name">
+Karthi
+</div>
 
-        <div class="msg">
-        Hi 👋
-        </div>
+<div class="chat-msg">
+Hello 👋
+</div>
 
-      </div>
+</div>
 
-    </div>
+</div>
 
-    <div class="time">
-    8:40 PM
-    </div>
+<div class="time">
+9:30 PM
+</div>
 
-  </div>
+</div>
 
-  <div class="chat">
+<div class="chat-box">
 
-    <div class="chat-left">
+<div class="chat-left">
 
-      <img src="https://i.imgur.com/6VBx3io.png">
+<img src="https://i.imgur.com/6VBx3io.png">
 
-      <div>
+<div>
 
-        <div class="name">
-        Vicky_X
-        </div>
+<div class="chat-name">
+Arun
+</div>
 
-        <div class="msg">
-        Typing...
-        </div>
+<div class="chat-msg">
+Typing...
+</div>
 
-      </div>
+</div>
 
-    </div>
+</div>
 
-    <div class="time">
-    7:10 PM
-    </div>
+<div class="time">
+8:40 PM
+</div>
 
-  </div>
+</div>
+
+<div class="chat-box">
+
+<div class="chat-left">
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div>
+
+<div class="chat-name">
+Vicky
+</div>
+
+<div class="chat-msg">
+Send photo
+</div>
+
+</div>
+
+</div>
+
+<div class="time">
+Yesterday
+</div>
+
+</div>
 
 </div>
 
 <div class="bottom-nav">
 
-  <div class="nav-btn">
-    <span>💬</span>
-    Chats
-  </div>
+<div class="nav">
+<span>💬</span>
+Chats
+</div>
 
-  <div class="nav-btn">
-    <span>👥</span>
-    Rooms
-  </div>
+<div class="nav">
+<span>👥</span>
+Friends
+</div>
 
-  <div class="nav-btn">
-    <span>📞</span>
-    Calls
-  </div>
+<div class="nav">
+<span>📞</span>
+Calls
+</div>
 
-  <div class="nav-btn">
-    <span>⚙️</span>
-    Settings
-  </div>
+<div class="nav">
+<span>⚙️</span>
+Settings
+</div>
 
 </div>
 
 <script>
 
-const username =
+const user =
 localStorage.getItem("username");
-
-if(username){
 
 document.getElementById(
 "username"
-).innerHTML=username;
+).innerHTML = user;
+
+function logout(){
+
+localStorage.clear();
+
+window.location.href =
+"index.html";
 
 }
 
