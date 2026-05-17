@@ -3,16 +3,15 @@ function sendOTP() {
 
     const number = document.getElementById("phone").value;
 
-    // Mobile number check
     if (number.length < 10) {
         alert("Enter valid mobile number");
         return;
     }
 
-    // Fake OTP
+    // OTP
     window.generatedOTP = "123456";
 
-    alert("OTP Sent Successfully\nYour OTP is: 123456");
+    alert("OTP Sent Successfully\nOTP: 123456");
 }
 
 
@@ -21,19 +20,20 @@ function verifyOTP() {
 
     const enteredOTP = document.getElementById("otp").value;
 
-    // OTP Check
     if (enteredOTP === window.generatedOTP) {
 
-        // Save user number
-        localStorage.setItem(
-            "userNumber",
-            document.getElementById("phone").value
-        );
+        const number =
+        document.getElementById("phone").value;
 
-        alert("Login Success ✅");
+        // Save Login
+        localStorage.setItem("userNumber", number);
 
-        // Open Dashboard
-        window.location.href = "dashboard.html";
+        // Small delay
+        setTimeout(() => {
+
+            window.location.href = "dashboard.html";
+
+        }, 500);
 
     } else {
 
