@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Chat</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:black;
+color:white;
+}
+
+/* TOP BAR */
+
+.topbar{
+width:100%;
+padding:15px;
+background:#111;
+display:flex;
+align-items:center;
+gap:15px;
+position:fixed;
+top:0;
+left:0;
+}
+
+.back{
+font-size:25px;
+cursor:pointer;
+}
+
+.user{
+font-size:20px;
+font-weight:bold;
+}
+
+/* CHAT AREA */
+
+.chat-area{
+padding:80px 15px 100px;
+}
+
+.msg{
+background:#0084ff;
+padding:12px 15px;
+border-radius:15px;
+margin-top:10px;
+width:fit-content;
+max-width:80%;
+}
+
+/* SEND BOX */
+
+.send-box{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#111;
+display:flex;
+padding:10px;
+}
+
+.send-box input{
+flex:1;
+padding:15px;
+border:none;
+border-radius:12px;
+outline:none;
+font-size:16px;
+}
+
+.send-box button{
+padding:15px 20px;
+margin-left:10px;
+border:none;
+border-radius:12px;
+background:#0084ff;
+color:white;
+font-size:16px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOP -->
+
+<div class="topbar">
+
+<div
+class="back"
+onclick="goBack()"
+>
+⬅
+</div>
+
+<div class="user">
+Karthi
+</div>
+
+</div>
+
+<!-- CHAT -->
+
+<div
+class="chat-area"
+id="chatArea"
+>
+
+<div class="msg">
+Hello 👋
+</div>
+
+</div>
+
+<!-- SEND -->
+
+<div class="send-box">
+
+<input
+type="text"
+id="msg"
+placeholder="Type message..."
+>
+
+<button onclick="sendMsg()">
+Send
+</button>
+
+</div>
+
+<script>
+
+function sendMsg(){
+
+let text =
+document.getElementById("msg").value;
+
+if(text.trim() === ""){
+return;
+}
+
+let div =
+document.createElement("div");
+
+div.className =
+"msg";
+
+div.innerText =
+text;
+
+document.getElementById(
+"chatArea"
+).appendChild(div);
+
+document.getElementById(
+"msg"
+).value = "";
+
+}
+
+function goBack(){
+
+window.location.href =
+"home.html";
+
+}
+
+</script>
+
+</body>
+</html>
