@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +9,9 @@
 
   <style>
     body{
-      background:#000;
+      margin:0;
+      padding:0;
+      background:black;
       display:flex;
       justify-content:center;
       align-items:center;
@@ -19,15 +20,16 @@
     }
 
     .box{
+      width:320px;
       background:#111;
       padding:30px;
       border-radius:20px;
-      width:300px;
     }
 
     h1{
       color:white;
       margin-bottom:20px;
+      text-align:center;
     }
 
     input{
@@ -37,6 +39,7 @@
       border:none;
       border-radius:10px;
       font-size:18px;
+      box-sizing:border-box;
     }
 
     button{
@@ -55,19 +58,158 @@
       color:white;
       text-align:center;
     }
+
+    #usernameBox{
+      display:none;
+    }
   </style>
 </head>
 
 <body>
 
 <div class="box" id="authBox">
+
   <h1>NammaApp</h1>
 
   <input type="email" id="email" placeholder="Enter Email">
+
   <input type="password" id="password" placeholder="Enter Password">
 
   <button onclick="register()">Register</button>
+
   <button onclick="login()">Login</button>
+
 </div>
 
-<div class="box" id="username
+<div class="box" id="usernameBox">
+
+  <h1>Create User ID</h1>
+
+  <input type="text" id="username" placeholder="Enter User ID">
+
+  <button onclick="saveUsername()">Continue</button>
+
+</div>
+
+<div class="box" id="home">
+
+  <h1>Welcome</h1>
+
+  <h2 id="showUser"></h2>
+
+  <button onclick="logout()">Logout</button>
+
+</div>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+  authDomain: "nammaapp-e8b13.firebaseapp.com",
+  projectId: "nammaapp-e8b13",
+  storageBucket: "nammaapp-e8b13.firebasestorage.app",
+  messagingSenderId: "1068448599469",
+  appId: "1:1068448599469:web:8f02d17e456597de75e524",
+  measurementId: "G-ZGL72NLPVS"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+function register(){
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.createUserWithEmailAndPassword(email,password)
+
+  .then(()=>{
+
+    document.getElementById("authBox").style.display="none";
+
+    document.getElementById("usernameBox").style.display="block";
+
+  })
+
+  .catch((error)=>{
+
+    alert(error.message);
+
+  });
+
+}
+
+function saveUsername(){
+
+  const user = auth.currentUser;
+
+  const username = document.getElementById("username").value;
+
+  db.collection("users").doc(user.uid).set({
+
+    email:user.email,
+
+    username:username
+
+  })
+
+  .then(()=>{
+
+    document.getElementById("usernameBox").style.display="none";
+
+    document.getElementById("home").style.display="block";
+
+    document.getElementById("showUser").innerHTML=username;
+
+  });
+
+}
+
+function login(){
+
+  const email = document.getElementById("email").value;
+
+  const password = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email,password)
+
+  .then((userCredential)=>{
+
+    const user = userCredential.user;
+
+    db.collection("users").doc(user.uid).get()
+
+    .then((doc)=>{
+
+      document.getElementById("authBox").style.display="none";
+
+      document.getElementById("home").style.display="block";
+
+      document.getElementById("showUser").innerHTML=doc.data().username;
+
+    });
+
+  })
+
+  .catch((error)=>{
+
+    alert(error.message);
+
+  });
+
+}
+
+function logout(){
+
+  auth.signOut();
+
+  location.reload();
+
+}
+
+</script>
+
+</body>
+</html>
