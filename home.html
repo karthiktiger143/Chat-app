@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NammaApp Dashboard</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:sans-serif;
+    }
+
+    body{
+      background:#000;
+      color:white;
+    }
+
+    .topbar{
+      width:100%;
+      padding:15px;
+      background:#111;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:1px solid #222;
+    }
+
+    .profile{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .profile img{
+      width:45px;
+      height:45px;
+      border-radius:50%;
+      object-fit:cover;
+    }
+
+    .online{
+      color:#00ff66;
+      font-size:14px;
+    }
+
+    .search{
+      width:100%;
+      padding:15px;
+      background:#000;
+    }
+
+    .search input{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:#111;
+      color:white;
+      font-size:16px;
+    }
+
+    .chat-list{
+      padding:10px;
+      margin-bottom:80px;
+    }
+
+    .chat{
+      width:100%;
+      background:#111;
+      padding:15px;
+      border-radius:15px;
+      margin-top:10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .chat-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .chat-left img{
+      width:50px;
+      height:50px;
+      border-radius:50%;
+    }
+
+    .name{
+      font-size:18px;
+      font-weight:bold;
+    }
+
+    .msg{
+      font-size:14px;
+      color:#aaa;
+      margin-top:3px;
+    }
+
+    .time{
+      color:#888;
+      font-size:12px;
+    }
+
+    .bottom-nav{
+      width:100%;
+      height:70px;
+      background:#111;
+      position:fixed;
+      bottom:0;
+      left:0;
+      display:flex;
+      justify-content:space-around;
+      align-items:center;
+      border-top:1px solid #222;
+    }
+
+    .nav-btn{
+      text-align:center;
+      color:white;
+      font-size:14px;
+    }
+
+    .nav-btn span{
+      display:block;
+      font-size:24px;
+      margin-bottom:3px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="topbar">
+
+  <div class="profile">
+
+    <img src="https://i.imgur.com/6VBx3io.png">
+
+    <div>
+
+      <h3 id="username">
+      User ID
+      </h3>
+
+      <div class="online">
+      Online
+      </div>
+
+    </div>
+
+  </div>
+
+  <h2>💬</h2>
+
+</div>
+
+<div class="search">
+
+  <input
+  type="text"
+  placeholder="Search User ID..."
+  >
+
+</div>
+
+<div class="chat-list">
+
+  <div class="chat">
+
+    <div class="chat-left">
+
+      <img src="https://i.imgur.com/6VBx3io.png">
+
+      <div>
+
+        <div class="name">
+        Arun_07
+        </div>
+
+        <div class="msg">
+        Hi 👋
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="time">
+    8:40 PM
+    </div>
+
+  </div>
+
+  <div class="chat">
+
+    <div class="chat-left">
+
+      <img src="https://i.imgur.com/6VBx3io.png">
+
+      <div>
+
+        <div class="name">
+        Vicky_X
+        </div>
+
+        <div class="msg">
+        Typing...
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="time">
+    7:10 PM
+    </div>
+
+  </div>
+
+</div>
+
+<div class="bottom-nav">
+
+  <div class="nav-btn">
+    <span>💬</span>
+    Chats
+  </div>
+
+  <div class="nav-btn">
+    <span>👥</span>
+    Rooms
+  </div>
+
+  <div class="nav-btn">
+    <span>📞</span>
+    Calls
+  </div>
+
+  <div class="nav-btn">
+    <span>⚙️</span>
+    Settings
+  </div>
+
+</div>
+
+<script>
+
+const username =
+localStorage.getItem("username");
+
+if(username){
+
+document.getElementById(
+"username"
+).innerHTML=username;
+
+}
+
+</script>
+
+</body>
+</html>
