@@ -1,86 +1,26 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+function sendOTP() {
+    const number = document.getElementById("phone").value;
 
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    if (number.length < 10) {
+        alert("Enter valid mobile number");
+        return;
+    }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
-  authDomain: "nammaapp-e8b13.firebaseapp.com",
-  projectId: "nammaapp-e8b13",
-  storageBucket: "nammaapp-e8b13.firebasestorage.app",
-  messagingSenderId: "1068448599469",
-  appId: "1:1068448599469:web:8f02d17e456597de75e524"
-};
+    // Fake OTP
+    window.generatedOTP = "123456";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-window.recaptchaVerifier = new RecaptchaVerifier(
-auth,
-"recaptcha-container",
-{
-size: "normal"
+    alert("OTP Sent Successfully\nYour OTP is: 123456");
 }
-);
 
-const sendOtpBtn = document.getElementById("sendOtp");
+function verifyOTP() {
+    const enteredOTP = document.getElementById("otp").value;
 
-sendOtpBtn.addEventListener("click", () => {
+    if (enteredOTP === window.generatedOTP) {
+        alert("Login Success ✅");
 
-const phoneNumber =
-"+91" + document.getElementById("phone").value;
-
-const appVerifier =
-window.recaptchaVerifier;
-
-signInWithPhoneNumber(
-auth,
-phoneNumber,
-appVerifier
-)
-
-.then((confirmationResult) => {
-
-window.confirmationResult =
-confirmationResult;
-
-alert("OTP Sent");
-
-})
-
-.catch((error) => {
-
-alert(error.message);
-
-console.log(error);
-
-});
-
-});
-
-const verifyBtn =
-document.getElementById("verifyOtp");
-
-verifyBtn.addEventListener("click", () => {
-
-const code =
-document.getElementById("otp").value;
-
-confirmationResult.confirm(code)
-
-.then((result) => {
-
-alert("Login Success");
-
-})
-
-.catch((error) => {
-
-alert("Wrong OTP");
-
-});
-
-});
+        // Example next page
+        window.location.href = "https://google.com";
+    } else {
+        alert("Wrong OTP ❌");
+    }
+}
