@@ -1,210 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NammaApp</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NammaApp Login</title>
 
-  <style>
-    body{
-      margin:0;
-      padding:0;
-      background:#000;
-      font-family:sans-serif;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-    }
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
 
-    .container{
-      width:90%;
-      max-width:350px;
-      background:#111;
-      padding:20px;
-      border-radius:20px;
-    }
+        body{
+            background:#000;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
 
-    h1{
-      color:white;
-      margin-bottom:20px;
-    }
+        .box{
+            width:90%;
+            max-width:400px;
+            background:#111;
+            padding:30px;
+            border-radius:25px;
+        }
 
-    input{
-      width:100%;
-      padding:15px;
-      margin-top:15px;
-      border:none;
-      border-radius:12px;
-      font-size:18px;
-      box-sizing:border-box;
-    }
+        h1{
+            color:white;
+            margin-bottom:25px;
+            font-size:40px;
+        }
 
-    button{
-      width:100%;
-      padding:15px;
-      margin-top:15px;
-      border:none;
-      border-radius:12px;
-      background:#1296f3;
-      color:white;
-      font-size:20px;
-    }
+        input{
+            width:100%;
+            padding:15px;
+            margin-top:15px;
+            border:none;
+            border-radius:12px;
+            font-size:18px;
+            outline:none;
+        }
 
-    #recaptcha-container{
-      margin-top:15px;
-      display:flex;
-      justify-content:center;
-    }
-  </style>
+        button{
+            width:100%;
+            padding:15px;
+            margin-top:20px;
+            border:none;
+            border-radius:12px;
+            background:#119dff;
+            color:white;
+            font-size:20px;
+            cursor:pointer;
+        }
 
+        button:hover{
+            opacity:0.9;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="box">
+        <h1>NammaApp</h1>
 
-<h1>NammaApp</h1>
+        <input type="email" id="email" placeholder="Enter Gmail">
 
-<input
-type="number"
-id="phone"
-placeholder="Phone Number"
-/>
+        <input type="password" id="password" placeholder="Enter Password">
 
-<div id="recaptcha-container"></div>
+        <button onclick="login()">Login</button>
+    </div>
 
-<button id="sendOtp">
-Send OTP
-</button>
+    <script>
+        function login(){
 
-<input
-type="text"
-id="otp"
-placeholder="Enter OTP"
-/>
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
 
-<button id="verifyOtp">
-Verify OTP
-</button>
+            if(email === "test@gmail.com" && password === "123456"){
 
-</div>
+                alert("Login Success ✅");
 
-<script type="module">
+                window.location.href = "https://google.com";
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+            } else {
 
-import {
-getAuth,
-RecaptchaVerifier,
-signInWithPhoneNumber
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+                alert("Wrong Email or Password ❌");
 
-const firebaseConfig = {
-
-apiKey:
-"AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
-
-authDomain:
-"nammaapp-e8b13.firebaseapp.com",
-
-projectId:
-"nammaapp-e8b13",
-
-storageBucket:
-"nammaapp-e8b13.firebasestorage.app",
-
-messagingSenderId:
-"1068448599469",
-
-appId:
-"1:1068448599469:web:8f02d17e456597de75e524"
-
-};
-
-const app =
-initializeApp(firebaseConfig);
-
-const auth =
-getAuth(app);
-
-window.recaptchaVerifier =
-new RecaptchaVerifier(
-auth,
-"recaptcha-container",
-{
-size:"normal"
-}
-);
-
-const sendBtn =
-document.getElementById("sendOtp");
-
-sendBtn.addEventListener(
-"click",
-() => {
-
-const number =
-"+91" +
-document.getElementById("phone").value;
-
-signInWithPhoneNumber(
-auth,
-number,
-window.recaptchaVerifier
-)
-
-.then((confirmationResult)=>{
-
-window.confirmationResult =
-confirmationResult;
-
-alert("OTP Sent");
-
-})
-
-.catch((error)=>{
-
-alert(error.message);
-
-console.log(error);
-
-});
-
-}
-);
-
-const verifyBtn =
-document.getElementById("verifyOtp");
-
-verifyBtn.addEventListener(
-"click",
-() => {
-
-const code =
-document.getElementById("otp").value;
-
-window.confirmationResult
-.confirm(code)
-
-.then(()=>{
-
-alert("Login Success");
-
-})
-
-.catch(()=>{
-
-alert("Wrong OTP");
-
-});
-
-}
-);
-
-</script>
+            }
+        }
+    </script>
 
 </body>
 </html>
