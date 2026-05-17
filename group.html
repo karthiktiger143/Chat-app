@@ -1,380 +1,115 @@
-<!DOCTYPE html>
-<html>
-<head>
+<script type="module">
 
-<title>NammaApp Groups</title>
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:sans-serif;
+import {
+getFirestore,
+collection,
+getDocs
 }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-body{
-background:#000;
-color:white;
-}
-
-/* TOPBAR */
-
-.topbar{
-width:100%;
-padding:15px;
-background:#111;
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #222;
-position:sticky;
-top:0;
-z-index:1000;
-}
-
-.title{
-font-size:22px;
-font-weight:bold;
-}
-
-.create-btn{
-background:#0084ff;
-border:none;
-padding:12px 15px;
-border-radius:12px;
-color:white;
-font-size:15px;
-cursor:pointer;
-}
-
-/* SEARCH */
-
-.search{
-padding:15px;
-}
-
-.search input{
-width:100%;
-padding:15px;
-border:none;
-border-radius:15px;
-background:#111;
-color:white;
-font-size:16px;
-outline:none;
-}
-
-/* GROUP LIST */
-
-.group-list{
-padding:15px;
-margin-bottom:100px;
-}
-
-.group{
-background:#111;
-padding:18px;
-border-radius:20px;
-margin-top:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-cursor:pointer;
-transition:0.2s;
-}
-
-.group:hover{
-background:#1a1a1a;
-}
-
-.group-left{
-display:flex;
-align-items:center;
-gap:15px;
-}
-
-.group-icon{
-width:60px;
-height:60px;
-border-radius:50%;
-background:#0084ff;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:28px;
-}
-
-.group-name{
-font-size:19px;
-font-weight:bold;
-}
-
-.group-status{
-font-size:13px;
-color:#00ff66;
-margin-top:4px;
-}
+/* FIREBASE CONFIG */
 
-.group-right{
-text-align:right;
-}
+const firebaseConfig = {
 
-.members{
-font-size:15px;
-color:#aaa;
-}
+apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
 
-.live{
-margin-top:6px;
-color:#ff4444;
-font-size:13px;
-}
+authDomain:
+"nammaapp-e8b13.firebaseapp.com",
 
-/* BOTTOM NAV */
+projectId:
+"nammaapp-e8b13",
 
-.bottom-nav{
-width:100%;
-height:75px;
-background:#111;
-position:fixed;
-bottom:0;
-left:0;
-display:flex;
-justify-content:space-around;
-align-items:center;
-border-top:1px solid #222;
-}
+storageBucket:
+"nammaapp-e8b13.firebasestorage.app",
 
-.nav{
-text-align:center;
-font-size:14px;
-cursor:pointer;
-}
+messagingSenderId:
+"1068448599469",
 
-.nav span{
-display:block;
-font-size:24px;
-margin-bottom:4px;
-}
+appId:
+"1:1068448599469:web:8f02d17e456597de75e524",
 
-</style>
+measurementId:
+"G-ZGL72NLPVS"
 
-</head>
+};
 
-<body>
+/* INIT */
 
-<!-- TOPBAR -->
+const app =
+initializeApp(firebaseConfig);
 
-<div class="topbar">
+const db =
+getFirestore(app);
 
-<div class="title">
-👥 Groups
-</div>
+/* LOAD GROUPS */
 
-<button
-class="create-btn"
-onclick="createGroup()"
->
-＋ Create
-</button>
+async function loadGroups(){
 
-</div>
-
-<!-- SEARCH -->
-
-<div class="search">
-
-<input
-type="text"
-placeholder="Search groups..."
->
-
-</div>
-
-<!-- GROUP LIST -->
-
-<div class="group-list">
-
-<!-- GROUP 1 -->
-
-<div
-class="group"
-onclick="window.location.href='group.html'"
->
-
-<div class="group-left">
-
-<div class="group-icon">
-🔥
-</div>
-
-<div>
-
-<div class="group-name">
-Tirunelveli
-</div>
-
-<div class="group-status">
-Online Room
-</div>
-
-</div>
-
-</div>
-
-<div class="group-right">
-
-<div class="members">
-8 / 8
-</div>
-
-<div class="live">
-LIVE
-</div>
-
-</div>
-
-</div>
-
-<!-- GROUP 2 -->
-
-<div
-class="group"
-onclick="window.location.href='group.html'"
->
-
-<div class="group-left">
-
-<div class="group-icon">
-🎵
-</div>
-
-<div>
-
-<div class="group-name">
-Music Lovers
-</div>
-
-<div class="group-status">
-5 Members Online
-</div>
-
-</div>
-
-</div>
-
-<div class="group-right">
-
-<div class="members">
-5 / 8
-</div>
-
-<div class="live">
-LIVE
-</div>
-
-</div>
-
-</div>
-
-<!-- GROUP 3 -->
-
-<div
-class="group"
-onclick="window.location.href='group.html'"
->
-
-<div class="group-left">
-
-<div class="group-icon">
-🎮
-</div>
-
-<div>
-
-<div class="group-name">
-Gaming Room
-</div>
-
-<div class="group-status">
-3 Members Online
-</div>
-
-</div>
-
-</div>
-
-<div class="group-right">
-
-<div class="members">
-3 / 8
-</div>
-
-<div class="live">
-LIVE
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- BOTTOM NAV -->
-
-<div class="bottom-nav">
-
-<div
-class="nav"
-onclick="window.location.href='home.html'"
->
-<span>💬</span>
-Chats
-</div>
-
-<div class="nav">
-<span>👥</span>
-Groups
-</div>
-
-<div class="nav">
-<span>📞</span>
-Calls
-</div>
-
-<div
-class="nav"
-onclick="window.location.href='profile.html'"
->
-<span>⚙️</span>
-Settings
-</div>
-
-</div>
-
-<script>
-
-function createGroup(){
-
-let room =
-prompt(
-"Enter Group Name"
+const querySnapshot =
+await getDocs(
+collection(db, "groups")
 );
 
-if(room){
+const groupList =
+document.querySelector(".group-list");
 
-alert(
-room + " Group Created 🔥"
-);
+groupList.innerHTML = "";
+
+querySnapshot.forEach((doc)=>{
+
+const data =
+doc.data();
+
+groupList.innerHTML += `
+
+<div
+class="group"
+onclick="window.location.href='group.html'"
+>
+
+<div class="group-left">
+
+<div class="group-icon">
+${data.emoji}
+</div>
+
+<div>
+
+<div class="group-name">
+${data.name}
+</div>
+
+<div class="group-status">
+${data.online} Members Online
+</div>
+
+</div>
+
+</div>
+
+<div class="group-right">
+
+<div class="members">
+${data.seats} / 8
+</div>
+
+<div class="live">
+LIVE
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
 
 }
 
-}
+loadGroups();
 
 </script>
-
-</body>
-</html>
