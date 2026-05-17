@@ -16,12 +16,12 @@ font-family:sans-serif;
 }
 
 body{
-background:black;
+background:#000;
 color:white;
 overflow:hidden;
 }
 
-/* TOP */
+/* TOPBAR */
 
 .topbar{
 width:100%;
@@ -39,7 +39,7 @@ z-index:1000;
 }
 
 .back{
-font-size:24px;
+font-size:25px;
 cursor:pointer;
 }
 
@@ -73,28 +73,22 @@ height:100vh;
 overflow-y:auto;
 }
 
-.left-msg{
-background:#1a1a1a;
-padding:12px 15px;
-border-radius:15px;
-margin-top:10px;
-width:fit-content;
-max-width:75%;
-}
+/* MESSAGE */
 
 .right-msg{
 background:#0084ff;
 padding:12px 15px;
 border-radius:15px;
-margin-top:10px;
+margin-top:12px;
 margin-left:auto;
 width:fit-content;
 max-width:75%;
+word-wrap:break-word;
 }
 
 .time{
 font-size:10px;
-color:#ccc;
+color:#ddd;
 margin-top:5px;
 text-align:right;
 }
@@ -119,8 +113,8 @@ flex:1;
 padding:15px;
 border:none;
 border-radius:15px;
-font-size:16px;
 outline:none;
+font-size:16px;
 }
 
 .send-box button{
@@ -130,6 +124,7 @@ border-radius:15px;
 background:#0084ff;
 color:white;
 font-size:18px;
+cursor:pointer;
 }
 
 </style>
@@ -138,7 +133,7 @@ font-size:18px;
 
 <body>
 
-<!-- TOP -->
+<!-- TOPBAR -->
 
 <div class="topbar">
 
@@ -156,7 +151,7 @@ onclick="window.location.href='home.html'"
 <div>
 
 <div class="name">
-Karthi
+NammaApp Chat
 </div>
 
 <div class="online">
@@ -169,7 +164,7 @@ Online
 
 </div>
 
-<!-- CHAT -->
+<!-- CHAT AREA -->
 
 <div
 class="chat-area"
@@ -177,7 +172,7 @@ id="chatArea"
 >
 </div>
 
-<!-- SEND -->
+<!-- SEND BOX -->
 
 <div class="send-box">
 
@@ -214,7 +209,8 @@ onSnapshot
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+apiKey:
+"AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
 
 authDomain:
 "nammaapp-e8b13.firebaseapp.com",
@@ -259,8 +255,14 @@ return;
 await addDoc(
 collection(db,"messages"),
 {
+
+name:
+localStorage.getItem("username"),
+
 msg:text,
+
 time:Date.now()
+
 }
 );
 
@@ -270,7 +272,7 @@ document.getElementById(
 
 };
 
-/* LOAD MESSAGES */
+/* LOAD MESSAGE */
 
 const q =
 query(
@@ -290,6 +292,10 @@ doc.data();
 html += `
 
 <div class="right-msg">
+
+<b>${data.name}</b>
+
+<br><br>
 
 ${data.msg}
 
