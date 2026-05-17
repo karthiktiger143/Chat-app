@@ -73,14 +73,26 @@ height:100vh;
 overflow-y:auto;
 }
 
-/* MESSAGE */
+/* MY MESSAGE */
 
-.right-msg{
+.my-msg{
 background:#0084ff;
 padding:12px 15px;
 border-radius:15px;
 margin-top:12px;
 margin-left:auto;
+width:fit-content;
+max-width:75%;
+word-wrap:break-word;
+}
+
+/* OTHER MESSAGE */
+
+.other-msg{
+background:#1a1a1a;
+padding:12px 15px;
+border-radius:15px;
+margin-top:12px;
 width:fit-content;
 max-width:75%;
 word-wrap:break-word;
@@ -106,6 +118,11 @@ align-items:center;
 gap:10px;
 padding:10px;
 border-top:1px solid #222;
+}
+
+.emoji{
+font-size:24px;
+cursor:pointer;
 }
 
 .send-box input{
@@ -176,6 +193,13 @@ id="chatArea"
 
 <div class="send-box">
 
+<div
+class="emoji"
+onclick="addEmoji()"
+>
+😊
+</div>
+
 <input
 type="text"
 id="msg"
@@ -240,6 +264,11 @@ initializeApp(firebaseConfig);
 const db =
 getFirestore(app);
 
+/* USERNAME */
+
+const currentUser =
+localStorage.getItem("username");
+
 /* SEND MESSAGE */
 
 window.sendMsg =
@@ -256,12 +285,11 @@ await addDoc(
 collection(db,"messages"),
 {
 
-name:
-localStorage.getItem("username"),
+name: currentUser,
 
-msg:text,
+msg: text,
 
-time:Date.now()
+time: Date.now()
 
 }
 );
@@ -289,9 +317,14 @@ snapshot.forEach((doc)=>{
 let data =
 doc.data();
 
+let msgClass =
+data.name === currentUser
+? "my-msg"
+: "other-msg";
+
 html += `
 
-<div class="right-msg">
+<div class="${msgClass}">
 
 <b>${data.name}</b>
 
@@ -316,6 +349,17 @@ document.getElementById(
 scrollBottom();
 
 });
+
+/* EMOJI */
+
+window.addEmoji =
+function(){
+
+document.getElementById(
+"msg"
+).value += "😊";
+
+}
 
 /* AUTO SCROLL */
 
