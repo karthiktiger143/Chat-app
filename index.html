@@ -1,8 +1,10 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html>
 <head>
 
-<title>NammaApp</title>
+<title>NammaApp Login</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -21,10 +23,9 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-color:white;
 }
 
-.container{
+.box{
 width:90%;
 max-width:400px;
 background:#111;
@@ -33,6 +34,7 @@ border-radius:20px;
 }
 
 h1{
+color:white;
 text-align:center;
 margin-bottom:25px;
 }
@@ -57,24 +59,13 @@ color:white;
 font-size:18px;
 }
 
-#homePage{
-display:none;
-text-align:center;
-}
-
-.logout{
-background:red;
-}
-
 </style>
 
 </head>
 
 <body>
 
-<div class="container">
-
-<div id="loginPage">
+<div class="box">
 
 <h1>NammaApp</h1>
 
@@ -100,45 +91,6 @@ Login
 
 </div>
 
-<div id="usernamePage" style="display:none;">
-
-<h1>Create User ID</h1>
-
-<input
-type="text"
-id="username"
-placeholder="Enter User ID"
->
-
-<button onclick="saveUsername()">
-Continue
-</button>
-
-</div>
-
-<div id="homePage">
-
-<h1 id="welcomeText">
-Welcome
-</h1>
-
-<br>
-
-<h2 id="showUser">
-User
-</h2>
-
-<button
-class="logout"
-onclick="logoutUser()"
->
-Logout
-</button>
-
-</div>
-
-</div>
-
 <script type="module">
 
 import { initializeApp }
@@ -147,8 +99,7 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
 getAuth,
 createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-signOut
+signInWithEmailAndPassword
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -218,61 +169,22 @@ password
 
 .then(()=>{
 
-document.getElementById(
-"loginPage"
-).style.display="none";
-
-document.getElementById(
-"usernamePage"
-).style.display="block";
-
-})
-
-.catch(()=>{
-
-alert("Incorrect Email or Password");
-
-});
-
-}
-
-window.saveUsername = function(){
-
 let username =
-document.getElementById("username").value;
+prompt("Enter User ID");
 
 localStorage.setItem(
 "username",
 username
 );
 
-document.getElementById(
-"usernamePage"
-).style.display="none";
+window.location.href =
+"home.html";
 
-document.getElementById(
-"homePage"
-).style.display="block";
+})
 
-document.getElementById(
-"welcomeText"
-).innerHTML =
-username + " Welcome";
+.catch(()=>{
 
-document.getElementById(
-"showUser"
-).innerHTML =
-"User ID : " + username;
-
-}
-
-window.logoutUser = function(){
-
-signOut(auth)
-
-.then(()=>{
-
-location.reload();
+alert("Incorrect Email or Password");
 
 });
 
