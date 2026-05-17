@@ -4,25 +4,207 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NammaApp</title>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body{
+      margin:0;
+      padding:0;
+      background:#000;
+      font-family:sans-serif;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    .container{
+      width:90%;
+      max-width:350px;
+      background:#111;
+      padding:20px;
+      border-radius:20px;
+    }
+
+    h1{
+      color:white;
+      margin-bottom:20px;
+    }
+
+    input{
+      width:100%;
+      padding:15px;
+      margin-top:15px;
+      border:none;
+      border-radius:12px;
+      font-size:18px;
+      box-sizing:border-box;
+    }
+
+    button{
+      width:100%;
+      padding:15px;
+      margin-top:15px;
+      border:none;
+      border-radius:12px;
+      background:#1296f3;
+      color:white;
+      font-size:20px;
+    }
+
+    #recaptcha-container{
+      margin-top:15px;
+      display:flex;
+      justify-content:center;
+    }
+  </style>
+
 </head>
+
 <body>
 
-  <div class="container">
-    <h1>NammaApp</h1>
+<div class="container">
 
-    <input type="number" id="phone" placeholder="Phone Number">
+<h1>NammaApp</h1>
 
-    <div id="recaptcha-container"></div>
+<input
+type="number"
+id="phone"
+placeholder="Phone Number"
+/>
 
-    <button id="sendOtp">Send OTP</button>
+<div id="recaptcha-container"></div>
 
-    <input type="text" id="otp" placeholder="Enter OTP">
+<button id="sendOtp">
+Send OTP
+</button>
 
-    <button id="verifyOtp">Verify OTP</button>
-  </div>
+<input
+type="text"
+id="otp"
+placeholder="Enter OTP"
+/>
 
-  <script type="module" src="script.js"></script>
+<button id="verifyOtp">
+Verify OTP
+</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+RecaptchaVerifier,
+signInWithPhoneNumber
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+
+authDomain:
+"nammaapp-e8b13.firebaseapp.com",
+
+projectId:
+"nammaapp-e8b13",
+
+storageBucket:
+"nammaapp-e8b13.firebasestorage.app",
+
+messagingSenderId:
+"1068448599469",
+
+appId:
+"1:1068448599469:web:8f02d17e456597de75e524"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+window.recaptchaVerifier =
+new RecaptchaVerifier(
+auth,
+"recaptcha-container",
+{
+size:"normal"
+}
+);
+
+const sendBtn =
+document.getElementById("sendOtp");
+
+sendBtn.addEventListener(
+"click",
+() => {
+
+const number =
+"+91" +
+document.getElementById("phone").value;
+
+signInWithPhoneNumber(
+auth,
+number,
+window.recaptchaVerifier
+)
+
+.then((confirmationResult)=>{
+
+window.confirmationResult =
+confirmationResult;
+
+alert("OTP Sent");
+
+})
+
+.catch((error)=>{
+
+alert(error.message);
+
+console.log(error);
+
+});
+
+}
+);
+
+const verifyBtn =
+document.getElementById("verifyOtp");
+
+verifyBtn.addEventListener(
+"click",
+() => {
+
+const code =
+document.getElementById("otp").value;
+
+window.confirmationResult
+.confirm(code)
+
+.then(()=>{
+
+alert("Login Success");
+
+})
+
+.catch(()=>{
+
+alert("Wrong OTP");
+
+});
+
+}
+);
+
+</script>
 
 </body>
 </html>
