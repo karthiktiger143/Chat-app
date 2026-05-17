@@ -65,10 +65,16 @@ font-size:12px;
 color:#00ff66;
 }
 
+.typing{
+font-size:12px;
+color:#ffaa00;
+margin-top:2px;
+}
+
 /* CHAT AREA */
 
 .chat-area{
-padding:90px 15px 110px;
+padding:100px 15px 110px;
 height:100vh;
 overflow-y:auto;
 }
@@ -175,6 +181,12 @@ NammaApp Chat
 Online
 </div>
 
+<div
+class="typing"
+id="typingStatus"
+>
+</div>
+
 </div>
 
 </div>
@@ -204,6 +216,7 @@ onclick="addEmoji()"
 type="text"
 id="msg"
 placeholder="Type message..."
+oninput="showTyping()"
 >
 
 <button onclick="sendMsg()">
@@ -264,7 +277,7 @@ initializeApp(firebaseConfig);
 const db =
 getFirestore(app);
 
-/* USERNAME */
+/* USER */
 
 const currentUser =
 localStorage.getItem("username");
@@ -298,9 +311,13 @@ document.getElementById(
 "msg"
 ).value = "";
 
+document.getElementById(
+"typingStatus"
+).innerHTML = "";
+
 };
 
-/* LOAD MESSAGE */
+/* LOAD MESSAGES */
 
 const q =
 query(
@@ -358,6 +375,31 @@ function(){
 document.getElementById(
 "msg"
 ).value += "😊";
+
+}
+
+/* TYPING */
+
+let typingTimer;
+
+window.showTyping =
+function(){
+
+document.getElementById(
+"typingStatus"
+).innerHTML =
+currentUser + " is typing...";
+
+clearTimeout(typingTimer);
+
+typingTimer =
+setTimeout(()=>{
+
+document.getElementById(
+"typingStatus"
+).innerHTML = "";
+
+},1500);
 
 }
 
