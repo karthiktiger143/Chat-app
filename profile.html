@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>User Profile</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#000;
+color:white;
+}
+
+/* TOPBAR */
+
+.topbar{
+width:100%;
+padding:15px;
+background:#111;
+display:flex;
+align-items:center;
+gap:15px;
+position:fixed;
+top:0;
+left:0;
+border-bottom:1px solid #222;
+}
+
+.back{
+font-size:24px;
+cursor:pointer;
+}
+
+/* PROFILE */
+
+.profile-box{
+padding-top:100px;
+text-align:center;
+}
+
+.profile-box img{
+width:120px;
+height:120px;
+border-radius:50%;
+border:4px solid #0084ff;
+}
+
+.username{
+font-size:28px;
+font-weight:bold;
+margin-top:15px;
+}
+
+.status{
+color:#00ff66;
+margin-top:5px;
+font-size:15px;
+}
+
+.bio{
+margin-top:15px;
+padding:0 20px;
+color:#aaa;
+line-height:25px;
+}
+
+/* BUTTONS */
+
+.btns{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.btns button{
+padding:15px;
+border:none;
+border-radius:15px;
+font-size:16px;
+color:white;
+cursor:pointer;
+}
+
+.msg-btn{
+background:#0084ff;
+}
+
+.req-btn{
+background:#00aa55;
+}
+
+.report-btn{
+background:#ff8800;
+}
+
+.block-btn{
+background:red;
+}
+
+/* INFO */
+
+.info-box{
+padding:20px;
+}
+
+.info{
+background:#111;
+padding:15px;
+border-radius:15px;
+margin-top:10px;
+}
+
+.info-title{
+font-size:14px;
+color:#888;
+}
+
+.info-value{
+font-size:18px;
+margin-top:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div
+class="back"
+onclick="window.location.href='home.html'"
+>
+⬅
+</div>
+
+<h2>Profile</h2>
+
+</div>
+
+<!-- PROFILE -->
+
+<div class="profile-box">
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div class="username" id="username">
+Karthi
+</div>
+
+<div class="status">
+Online
+</div>
+
+<div class="bio">
+Love chatting 💬 | Music 🎵 | Gaming 🎮
+</div>
+
+</div>
+
+<!-- BUTTONS -->
+
+<div class="btns">
+
+<button
+class="msg-btn"
+onclick="openChat()"
+>
+💬 Message
+</button>
+
+<button
+class="req-btn"
+onclick="sendRequest()"
+>
+➕ Send Request
+</button>
+
+<button
+class="report-btn"
+onclick="reportUser()"
+>
+⚠ Report User
+</button>
+
+<button
+class="block-btn"
+onclick="blockUser()"
+>
+🚫 Block User
+</button>
+
+</div>
+
+<!-- INFO -->
+
+<div class="info-box">
+
+<div class="info">
+
+<div class="info-title">
+User ID
+</div>
+
+<div
+class="info-value"
+id="userid"
+>
+@karthi
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="info-title">
+Followers
+</div>
+
+<div class="info-value">
+1.2K
+</div>
+
+</div>
+
+<div class="info">
+
+<div class="info-title">
+Joined
+</div>
+
+<div class="info-value">
+2026
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* USER */
+
+const user =
+localStorage.getItem("username");
+
+document.getElementById(
+"username"
+).innerHTML =
+user;
+
+document.getElementById(
+"userid"
+).innerHTML =
+"@" + user;
+
+/* BUTTONS */
+
+function openChat(){
+
+window.location.href =
+"chat.html";
+
+}
+
+function sendRequest(){
+
+alert(
+"Request Sent ✅"
+);
+
+}
+
+function reportUser(){
+
+alert(
+"User Reported ⚠"
+);
+
+}
+
+function blockUser(){
+
+alert(
+"User Blocked 🚫"
+);
+
+}
+
+</script>
+
+</body>
+</html>
