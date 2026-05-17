@@ -1,39 +1,28 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NammaApp</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  <div class="container">
+    <h1>NammaApp</h1>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
-  authDomain: "nammaapp-e8b13.firebaseapp.com",
-  projectId: "nammaapp-e8b13",
-  storageBucket: "nammaapp-e8b13.firebasestorage.app",
-  messagingSenderId: "1068448599469",
-  appId: "1:1068448599469:web:8f02d17e456597de75e524"
-};
+    <input type="number" id="phone" placeholder="Phone Number">
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    <div id="recaptcha-container"></div>
 
-window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sendOtp', {
-  'size': 'normal'
-});
+    <button id="sendOtp">Send OTP</button>
 
-const sendOtpBtn = document.getElementById("sendOtp");
+    <input type="text" id="otp" placeholder="Enter OTP">
 
-sendOtpBtn.addEventListener("click", () => {
-  const number = "+91" + document.getElementById("phone").value;
+    <button id="verifyOtp">Verify OTP</button>
+  </div>
 
-  signInWithPhoneNumber(auth, number, window.recaptchaVerifier)
-    .then((confirmationResult) => {
-      window.confirmationResult = confirmationResult;
-      alert("OTP Sent");
-    })
-    .catch((error) => {
-      alert(error.message);
-      console.log(error);
-    });
-});
+  <script type="module" src="script.js"></script>
+
+</body>
+</html>
