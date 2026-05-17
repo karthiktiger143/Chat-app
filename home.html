@@ -1,3 +1,5 @@
+<!-- home.html -->
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -64,13 +66,6 @@ border-radius:12px;
 background:#111;
 color:white;
 font-size:16px;
-}
-
-.section-title{
-padding-left:15px;
-padding-top:5px;
-font-size:18px;
-font-weight:bold;
 }
 
 .chat-list{
@@ -201,10 +196,6 @@ placeholder="Search chats..."
 
 </div>
 
-<div class="section-title">
-Recent Chats
-</div>
-
 <div class="chat-list">
 
 <div class="chat-box">
@@ -259,32 +250,6 @@ Typing...
 
 </div>
 
-<div class="chat-box">
-
-<div class="chat-left">
-
-<img src="https://i.imgur.com/6VBx3io.png">
-
-<div>
-
-<div class="chat-name">
-Vicky
-</div>
-
-<div class="chat-msg">
-Send photo
-</div>
-
-</div>
-
-</div>
-
-<div class="time">
-Yesterday
-</div>
-
-</div>
-
 </div>
 
 <div class="bottom-nav">
@@ -318,7 +283,8 @@ localStorage.getItem("username");
 
 document.getElementById(
 "username"
-).innerHTML = user;
+).innerHTML =
+user + " Welcome";
 
 function logout(){
 
