@@ -1,115 +1,379 @@
-<script type="module">
+<!DOCTYPE html>
+<html>
+<head>
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+<title>Group Room</title>
 
-import {
-getFirestore,
-collection,
-getDocs
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
+body{
+background:#000;
+color:white;
+}
 
-const firebaseConfig = {
+/* TOP */
 
-apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+.topbar{
+width:100%;
+padding:15px;
+background:#111;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid #222;
+position:fixed;
+top:0;
+left:0;
+z-index:1000;
+}
 
-authDomain:
-"nammaapp-e8b13.firebaseapp.com",
+.room-info{
+display:flex;
+flex-direction:column;
+}
 
-projectId:
-"nammaapp-e8b13",
+.room-name{
+font-size:20px;
+font-weight:bold;
+}
 
-storageBucket:
-"nammaapp-e8b13.firebasestorage.app",
+.room-online{
+font-size:13px;
+color:#00ff66;
+margin-top:3px;
+}
 
-messagingSenderId:
-"1068448599469",
+.admin-btn{
+background:#0084ff;
+border:none;
+padding:10px 14px;
+border-radius:12px;
+color:white;
+}
 
-appId:
-"1:1068448599469:web:8f02d17e456597de75e524",
+/* SEATS */
 
-measurementId:
-"G-ZGL72NLPVS"
+.seats{
+padding-top:90px;
+padding-left:15px;
+padding-right:15px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
 
-};
+.seat{
+background:#111;
+padding:20px;
+border-radius:20px;
+text-align:center;
+position:relative;
+}
 
-/* INIT */
+.seat img{
+width:70px;
+height:70px;
+border-radius:50%;
+}
 
-const app =
-initializeApp(firebaseConfig);
+.username{
+margin-top:10px;
+font-size:18px;
+font-weight:bold;
+}
 
-const db =
-getFirestore(app);
+.status{
+margin-top:5px;
+font-size:14px;
+color:#00ff66;
+}
 
-/* LOAD GROUPS */
+.crown{
+position:absolute;
+top:10px;
+right:10px;
+font-size:22px;
+}
 
-async function loadGroups(){
+/* COMMENTS */
 
-const querySnapshot =
-await getDocs(
-collection(db, "groups")
-);
+.comment-area{
+padding:15px;
+margin-bottom:90px;
+}
 
-const groupList =
-document.querySelector(".group-list");
+.comment{
+background:#111;
+padding:12px;
+border-radius:15px;
+margin-top:10px;
+font-size:15px;
+}
 
-groupList.innerHTML = "";
+/* BOTTOM */
 
-querySnapshot.forEach((doc)=>{
+.send-box{
+width:100%;
+background:#111;
+position:fixed;
+bottom:0;
+left:0;
+display:flex;
+gap:10px;
+padding:10px;
+align-items:center;
+border-top:1px solid #222;
+}
 
-const data =
-doc.data();
+.send-box input{
+flex:1;
+padding:15px;
+border:none;
+border-radius:15px;
+outline:none;
+font-size:16px;
+}
 
-groupList.innerHTML += `
+.send-btn{
+background:#0084ff;
+border:none;
+padding:14px 18px;
+border-radius:15px;
+color:white;
+font-size:18px;
+}
+
+.emoji,
+.gift{
+font-size:24px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="room-info">
+
+<div class="room-name">
+🔥 Tirunelveli Room
+</div>
+
+<div class="room-online">
+8 Members Online
+</div>
+
+</div>
+
+<button class="admin-btn">
+Admin
+</button>
+
+</div>
+
+<!-- SEATS -->
+
+<div class="seats">
+
+<div class="seat">
+
+<div class="crown">
+👑
+</div>
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div class="username">
+Karthi
+</div>
+
+<div class="status">
+🎤 Speaking
+</div>
+
+</div>
+
+<div class="seat">
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div class="username">
+Arun
+</div>
+
+<div class="status">
+🎧 Listening
+</div>
+
+</div>
+
+<div class="seat">
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div class="username">
+Hari
+</div>
+
+<div class="status">
+🎧 Listening
+</div>
+
+</div>
+
+<div class="seat">
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div class="username">
+Vicky
+</div>
+
+<div class="status">
+🎤 Speaking
+</div>
+
+</div>
+
+</div>
+
+<!-- COMMENTS -->
 
 <div
-class="group"
-onclick="window.location.href='group.html'"
+class="comment-area"
+id="commentArea"
 >
 
-<div class="group-left">
-
-<div class="group-icon">
-${data.emoji}
+<div class="comment">
+Karthi : Hello Guys 👋
 </div>
 
-<div>
-
-<div class="group-name">
-${data.name}
-</div>
-
-<div class="group-status">
-${data.online} Members Online
+<div class="comment">
+Arun : Welcome 🔥
 </div>
 
 </div>
 
+<!-- SEND BOX -->
+
+<div class="send-box">
+
+<div
+class="emoji"
+onclick="addEmoji()"
+>
+😊
 </div>
 
-<div class="group-right">
-
-<div class="members">
-${data.seats} / 8
+<div
+class="gift"
+onclick="sendGift()"
+>
+🎁
 </div>
 
-<div class="live">
-LIVE
-</div>
+<input
+type="text"
+id="msg"
+placeholder="Write comment..."
+>
+
+<button
+class="send-btn"
+onclick="sendMsg()"
+>
+➤
+</button>
 
 </div>
 
-</div>
+<script>
 
-`;
+function sendMsg(){
 
-});
+let msg =
+document.getElementById(
+"msg"
+).value;
+
+if(msg == ""){
+return;
+}
+
+let user =
+localStorage.getItem(
+"username"
+);
+
+let div =
+document.createElement(
+"div"
+);
+
+div.className =
+"comment";
+
+div.innerHTML =
+user + " : " + msg;
+
+document.getElementById(
+"commentArea"
+).appendChild(div);
+
+document.getElementById(
+"msg"
+).value = "";
 
 }
 
-loadGroups();
+function addEmoji(){
+
+document.getElementById(
+"msg"
+).value += "😊";
+
+}
+
+function sendGift(){
+
+let user =
+localStorage.getItem(
+"username"
+);
+
+let div =
+document.createElement(
+"div"
+);
+
+div.className =
+"comment";
+
+div.innerHTML =
+user + " sent gift 🎁";
+
+document.getElementById(
+"commentArea"
+).appendChild(div);
+
+}
 
 </script>
+
+</body>
+</html>
