@@ -1,211 +1,280 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NammaApp</title>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<title>NammaApp</title>
 
-  <style>
-    body{
-      margin:0;
-      padding:0;
-      background:black;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      font-family:sans-serif;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .box{
-      width:320px;
-      background:#111;
-      padding:30px;
-      border-radius:20px;
-    }
+<style>
 
-    h1{
-      color:white;
-      margin-bottom:20px;
-      text-align:center;
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
 
-    input{
-      width:100%;
-      padding:15px;
-      margin-top:10px;
-      border:none;
-      border-radius:10px;
-      font-size:18px;
-      box-sizing:border-box;
-    }
+body{
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+color:white;
+}
 
-    button{
-      width:100%;
-      padding:15px;
-      margin-top:15px;
-      border:none;
-      border-radius:10px;
-      background:#2196f3;
-      color:white;
-      font-size:20px;
-    }
+.container{
+width:90%;
+max-width:400px;
+background:#111;
+padding:25px;
+border-radius:20px;
+}
 
-    #home{
-      display:none;
-      color:white;
-      text-align:center;
-    }
+h1{
+text-align:center;
+margin-bottom:25px;
+}
 
-    #usernameBox{
-      display:none;
-    }
-  </style>
+input{
+width:100%;
+padding:15px;
+margin-top:12px;
+border:none;
+border-radius:12px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:15px;
+border:none;
+border-radius:12px;
+background:#2196f3;
+color:white;
+font-size:18px;
+}
+
+#homePage{
+display:none;
+text-align:center;
+}
+
+.logout{
+background:red;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<div class="box" id="authBox">
+<div class="container">
 
-  <h1>NammaApp</h1>
+<div id="loginPage">
 
-  <input type="email" id="email" placeholder="Enter Email">
+<h1>NammaApp</h1>
 
-  <input type="password" id="password" placeholder="Enter Password">
+<input
+type="email"
+id="email"
+placeholder="Enter Email"
+>
 
-  <button onclick="register()">Register</button>
+<input
+type="password"
+id="password"
+placeholder="Enter Password"
+>
 
-  <button onclick="login()">Login</button>
+<button onclick="registerUser()">
+Register
+</button>
 
-</div>
-
-<div class="box" id="usernameBox">
-
-  <h1>Create User ID</h1>
-
-  <input type="text" id="username" placeholder="Enter User ID">
-
-  <button onclick="saveUsername()">Continue</button>
-
-</div>
-
-<div class="box" id="home">
-
-  <h1>Welcome</h1>
-
-  <h2 id="showUser"></h2>
-
-  <button onclick="logout()">Logout</button>
+<button onclick="loginUser()">
+Login
+</button>
 
 </div>
 
-<script>
+<div id="usernamePage" style="display:none;">
+
+<h1>Create User ID</h1>
+
+<input
+type="text"
+id="username"
+placeholder="Enter User ID"
+>
+
+<button onclick="saveUsername()">
+Continue
+</button>
+
+</div>
+
+<div id="homePage">
+
+<h1 id="welcomeText">
+Welcome
+</h1>
+
+<br>
+
+<h2 id="showUser">
+User
+</h2>
+
+<button
+class="logout"
+onclick="logoutUser()"
+>
+Logout
+</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
-  authDomain: "nammaapp-e8b13.firebaseapp.com",
-  projectId: "nammaapp-e8b13",
-  storageBucket: "nammaapp-e8b13.firebasestorage.app",
-  messagingSenderId: "1068448599469",
-  appId: "1:1068448599469:web:8f02d17e456597de75e524",
-  measurementId: "G-ZGL72NLPVS"
+
+apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+
+authDomain: "nammaapp-e8b13.firebaseapp.com",
+
+projectId: "nammaapp-e8b13",
+
+storageBucket: "nammaapp-e8b13.firebasestorage.app",
+
+messagingSenderId: "1068448599469",
+
+appId: "1:1068448599469:web:8f02d17e456597de75e524",
+
+measurementId: "G-ZGL72NLPVS"
+
 };
 
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth = getAuth(app);
 
-function register(){
+window.registerUser = function(){
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+let email =
+document.getElementById("email").value;
 
-  auth.createUserWithEmailAndPassword(email,password)
+let password =
+document.getElementById("password").value;
 
-  .then(()=>{
+createUserWithEmailAndPassword(
+auth,
+email,
+password
+)
 
-    document.getElementById("authBox").style.display="none";
+.then(()=>{
 
-    document.getElementById("usernameBox").style.display="block";
+alert("Register Success");
 
-  })
+})
 
-  .catch((error)=>{
+.catch((error)=>{
 
-    alert(error.message);
+alert(error.message);
 
-  });
-
-}
-
-function saveUsername(){
-
-  const user = auth.currentUser;
-
-  const username = document.getElementById("username").value;
-
-  db.collection("users").doc(user.uid).set({
-
-    email:user.email,
-
-    username:username
-
-  })
-
-  .then(()=>{
-
-    document.getElementById("usernameBox").style.display="none";
-
-    document.getElementById("home").style.display="block";
-
-    document.getElementById("showUser").innerHTML=username;
-
-  });
+});
 
 }
 
-function login(){
+window.loginUser = function(){
 
-  const email = document.getElementById("email").value;
+let email =
+document.getElementById("email").value;
 
-  const password = document.getElementById("password").value;
+let password =
+document.getElementById("password").value;
 
-  auth.signInWithEmailAndPassword(email,password)
+signInWithEmailAndPassword(
+auth,
+email,
+password
+)
 
-  .then((userCredential)=>{
+.then(()=>{
 
-    const user = userCredential.user;
+document.getElementById(
+"loginPage"
+).style.display="none";
 
-    db.collection("users").doc(user.uid).get()
+document.getElementById(
+"usernamePage"
+).style.display="block";
 
-    .then((doc)=>{
+})
 
-      document.getElementById("authBox").style.display="none";
+.catch(()=>{
 
-      document.getElementById("home").style.display="block";
+alert("Incorrect Email or Password");
 
-      document.getElementById("showUser").innerHTML=doc.data().username;
-
-    });
-
-  })
-
-  .catch((error)=>{
-
-    alert(error.message);
-
-  });
+});
 
 }
 
-function logout(){
+window.saveUsername = function(){
 
-  auth.signOut();
+let username =
+document.getElementById("username").value;
 
-  location.reload();
+localStorage.setItem(
+"username",
+username
+);
+
+document.getElementById(
+"usernamePage"
+).style.display="none";
+
+document.getElementById(
+"homePage"
+).style.display="block";
+
+document.getElementById(
+"welcomeText"
+).innerHTML =
+username + " Welcome";
+
+document.getElementById(
+"showUser"
+).innerHTML =
+"User ID : " + username;
+
+}
+
+window.logoutUser = function(){
+
+signOut(auth)
+
+.then(()=>{
+
+location.reload();
+
+});
 
 }
 
