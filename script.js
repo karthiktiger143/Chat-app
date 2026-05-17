@@ -1,28 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NammaApp</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-  <div class="container">
-    <h1>NammaApp</h1>
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    <input type="number" id="phone" placeholder="Phone Number">
+const firebaseConfig = {
+  apiKey: "AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+  authDomain: "nammaapp-e8b13.firebaseapp.com",
+  projectId: "nammaapp-e8b13",
+  storageBucket: "nammaapp-e8b13.firebasestorage.app",
+  messagingSenderId: "1068448599469",
+  appId: "1:1068448599469:web:8f02d17e456597de75e524"
+};
 
-    <div id="recaptcha-container"></div>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-    <button id="sendOtp">Send OTP</button>
+window.recaptchaVerifier = new RecaptchaVerifier(
+auth,
+"recaptcha-container",
+{
+size: "normal"
+}
+);
 
-    <input type="text" id="otp" placeholder="Enter OTP">
+const sendOtpBtn = document.getElementById("sendOtp");
 
-    <button id="verifyOtp">Verify OTP</button>
-  </div>
+sendOtpBtn.addEventListener("click", () => {
 
-  <script type="module" src="script.js"></script>
+const phoneNumber =
+"+91" + document.getElementById("phone").value;
 
-</body>
-</html>
+const appVerifier =
+window.recaptchaVerifier;
+
+signInWithPhoneNumber(
+auth,
+phoneNumber,
+appVerifier
+)
+
+.then((confirmationResult) => {
+
+window.confirmationResult =
+confirmationResult;
+
+alert("OTP Sent");
+
+})
+
+.catch((error) => {
+
+alert(error.message);
+
+console.log(error);
+
+});
+
+});
+
+const verifyBtn =
+document.getElementById("verifyOtp");
+
+verifyBtn.addEventListener("click", () => {
+
+const code =
+document.getElementById("otp").value;
+
+confirmationResult.confirm(code)
+
+.then((result) => {
+
+alert("Login Success");
+
+})
+
+.catch((error) => {
+
+alert("Wrong OTP");
+
+});
+
+});
