@@ -71,12 +71,13 @@ font-size:16px;
 font-weight:bold;
 white-space:nowrap;
 color:#777;
+cursor:pointer;
+padding-bottom:6px;
 }
 
 .active{
 color:#000;
 border-bottom:3px solid #0084ff;
-padding-bottom:6px;
 }
 
 /* BANNER */
@@ -320,24 +321,32 @@ Live
 
 <div class="categories">
 
-<div class="category active">
-Popular
+<div
+class="category active"
+onclick="loadPopular()"
+>
+🔥 Popular
 </div>
 
-<div class="category">
-Friend Zone
+<div
+class="category"
+onclick="loadMyGroups()"
+>
+👑 My Groups
 </div>
 
-<div class="category">
-Gaming
+<div
+class="category"
+onclick="loadJoined()"
+>
+💬 Joined
 </div>
 
-<div class="category">
-Music
-</div>
-
-<div class="category">
-Tamil
+<div
+class="category"
+onclick="openPopup()"
+>
+➕ Create Group
 </div>
 
 </div>
@@ -360,7 +369,10 @@ Join Live Chat Rooms And Make Friends 🔥
 
 <div class="section">
 
-<div class="section-title">
+<div
+class="section-title"
+id="sectionTitle"
+>
 🔥 Popular Rooms
 </div>
 
@@ -503,6 +515,15 @@ initializeApp(firebaseConfig);
 const db =
 getFirestore(app);
 
+/* USER */
+
+const username =
+localStorage.getItem(
+"username"
+)
+||
+"Guest";
+
 /* POPUP */
 
 window.openPopup =
@@ -563,14 +584,11 @@ groupDesc:desc,
 
 groupType:type,
 
-ownerName:
-localStorage.getItem(
-"username"
-)
-||
-"Guest",
+ownerName:username,
 
 onlineUsers:1,
+
+members:1,
 
 created:Date.now(),
 
@@ -626,7 +644,7 @@ ${data.groupName}
 </div>
 
 <div class="room-online">
-🟢 ${data.onlineUsers} Online
+🟢 ${data.onlineUsers || 0} Online
 </div>
 
 <div class="room-owner">
@@ -670,6 +688,38 @@ function(id){
 window.location.href =
 "group.html?id=" +
 id;
+
+}
+
+/* CATEGORY */
+
+window.loadPopular =
+function(){
+
+document.getElementById(
+"sectionTitle"
+).innerHTML =
+"🔥 Popular Rooms";
+
+}
+
+window.loadMyGroups =
+function(){
+
+document.getElementById(
+"sectionTitle"
+).innerHTML =
+"👑 My Groups";
+
+}
+
+window.loadJoined =
+function(){
+
+document.getElementById(
+"sectionTitle"
+).innerHTML =
+"💬 Joined Groups";
 
 }
 
