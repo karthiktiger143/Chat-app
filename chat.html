@@ -424,7 +424,7 @@ document.getElementById(
 
 }
 
-/* LOAD */
+/* LOAD MESSAGES */
 
 const q =
 query(
@@ -563,6 +563,10 @@ function(event){
 let file =
 event.target.files[0];
 
+if(!file){
+return;
+}
+
 let reader =
 new FileReader();
 
@@ -602,6 +606,10 @@ function(event){
 
 let file =
 event.target.files[0];
+
+if(!file){
+return;
+}
 
 let reader =
 new FileReader();
