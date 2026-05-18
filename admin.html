@@ -24,7 +24,7 @@ font-family:sans-serif;
 body{
 background:#000;
 color:white;
-padding-bottom:100px;
+padding-bottom:120px;
 }
 
 /* TOPBAR */
@@ -121,10 +121,6 @@ background:#ff8800;
 background:#8a2be2;
 }
 
-.gray{
-background:#444;
-}
-
 /* INPUT */
 
 .input{
@@ -191,25 +187,33 @@ margin-top:10px;
 font-size:14px;
 }
 
-/* SWITCH */
+/* SEAT */
 
-.switch{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-top:15px;
+.seat{
 background:#1a1a1a;
 padding:15px;
-border-radius:14px;
+border-radius:15px;
+margin-top:12px;
+text-align:center;
+transition:0.3s;
 }
 
-select{
-background:#222;
-color:white;
-border:none;
-padding:12px;
-border-radius:12px;
-outline:none;
+.seat img{
+width:70px;
+height:70px;
+border-radius:50%;
+}
+
+.username{
+margin-top:10px;
+font-size:18px;
+font-weight:bold;
+}
+
+.status{
+margin-top:5px;
+color:#00ff66;
+font-size:14px;
 }
 
 </style>
@@ -271,13 +275,6 @@ onclick="unlockRoom()"
 
 <button
 class="btn orange"
-onclick="clearChat()"
->
-🧹 Clear Comments
-</button>
-
-<button
-class="btn purple"
 onclick="pinMessage()"
 >
 📌 Pin Message
@@ -308,7 +305,7 @@ onclick="sendAnnouncement()"
 
 </div>
 
-<!-- USER MANAGEMENT -->
+<!-- USERS -->
 
 <div class="card">
 
@@ -398,131 +395,29 @@ onclick="kickUser('Arun')"
 🎤 Seat Requests
 </h3>
 
-<div class="user">
-
-<div>
-
-<div class="user-name">
-Hari Wants Seat
-</div>
-
-<div class="user-status">
-Raise Hand ✋
-</div>
-
-</div>
-
-<div class="actions">
-
-<button
-class="action-btn green"
-onclick="approveSeat('Hari')"
+<div
+id="seatRequestBox"
 >
-✅
-</button>
-
-<button
-class="action-btn red"
-onclick="rejectSeat('Hari')"
->
-❌
-</button>
-
 </div>
 
 </div>
 
-</div>
-
-<!-- SETTINGS -->
+<!-- LIVE SPEAKERS -->
 
 <div class="card">
 
 <h3>
-⚙ Room Settings
+🎤 Active Speakers
 </h3>
 
-<div class="switch">
-
-<span>
-🎁 Gifts
-</span>
-
-<select>
-<option>ON</option>
-<option>OFF</option>
-</select>
-
-</div>
-
-<div class="switch">
-
-<span>
-💬 Comments
-</span>
-
-<select>
-<option>ON</option>
-<option>OFF</option>
-</select>
-
-</div>
-
-<div class="switch">
-
-<span>
-🎤 Voice Chat
-</span>
-
-<select>
-<option>ON</option>
-<option>OFF</option>
-</select>
-
-</div>
-
-<div class="switch">
-
-<span>
-🔞 Bad Word Filter
-</span>
-
-<select>
-<option>ON</option>
-<option>OFF</option>
-</select>
-
+<div
+id="seatContainer"
+>
 </div>
 
 </div>
 
-<!-- ANALYTICS -->
-
-<div class="card">
-
-<h3>
-📊 Room Analytics
-</h3>
-
-<div class="log">
-👥 Total Users : 28
-</div>
-
-<div class="log">
-🎤 Active Speakers : 4
-</div>
-
-<div class="log">
-💬 Messages Today : 540
-</div>
-
-<div class="log">
-🎁 Gifts Sent : 93
-</div>
-
-</div>
-
-<!-- ADMIN LOGS -->
+<!-- LOGS -->
 
 <div class="card">
 
@@ -534,23 +429,6 @@ onclick="rejectSeat('Hari')"
 class="logs"
 id="adminLogs"
 >
-
-<div class="log">
-🚫 Arun kicked by Admin
-</div>
-
-<div class="log">
-🔇 Hari muted for 10 minutes
-</div>
-
-<div class="log">
-📌 Comment pinned
-</div>
-
-<div class="log">
-🔒 Room locked
-</div>
-
 </div>
 
 </div>
@@ -571,11 +449,16 @@ getFirestore,
 collection,
 addDoc,
 setDoc,
-doc
+doc,
+onSnapshot,
+query,
+orderBy,
+deleteDoc,
+where
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE CONFIG */
+/* FIREBASE */
 
 const firebaseConfig = {
 
@@ -605,26 +488,57 @@ initializeApp(firebaseConfig);
 const db =
 getFirestore(app);
 
-/* ADMIN LOG */
+/* ADD LOG */
 
 async function addLog(text){
 
-let logBox =
-document.getElementById(
-"adminLogs"
+await addDoc(
+collection(db,"adminLogs"),
+{
+text:text,
+time:Date.now()
+}
 );
 
-logBox.innerHTML += `
+}
+
+/* LIVE LOGS */
+
+const logQuery =
+query(
+collection(db,"adminLogs"),
+orderBy("time")
+);
+
+onSnapshot(
+logQuery,
+(snapshot)=>{
+
+let html = "";
+
+snapshot.forEach((docx)=>{
+
+let data =
+docx.data();
+
+html += `
 
 <div class="log">
-${text}
+${data.text}
 </div>
 
 `;
 
-}
+});
 
-/* LOCK ROOM */
+document.getElementById(
+"adminLogs"
+).innerHTML =
+html;
+
+});
+
+/* LOCK */
 
 window.lockRoom =
 async function(){
@@ -646,7 +560,7 @@ alert(
 
 }
 
-/* UNLOCK ROOM */
+/* UNLOCK */
 
 window.unlockRoom =
 async function(){
@@ -664,52 +578,6 @@ addLog(
 
 alert(
 "Room Unlocked 🔓"
-);
-
-}
-
-/* CLEAR CHAT */
-
-window.clearChat =
-async function(){
-
-await addDoc(
-collection(db,"adminActions"),
-{
-action:"clearChat",
-time:Date.now()
-}
-);
-
-addLog(
-"🧹 Comments Cleared"
-);
-
-alert(
-"Comments Cleared 🧹"
-);
-
-}
-
-/* PIN */
-
-window.pinMessage =
-async function(){
-
-await addDoc(
-collection(db,"adminActions"),
-{
-action:"pinMessage",
-time:Date.now()
-}
-);
-
-addLog(
-"📌 Message Pinned"
-);
-
-alert(
-"Message Pinned 📌"
 );
 
 }
@@ -746,25 +614,34 @@ alert(
 
 }
 
-/* MUTE */
+/* PIN */
 
-window.muteUser =
-async function(name){
+window.pinMessage =
+async function(){
+
+let msg =
+prompt(
+"Enter Pin Message"
+);
+
+if(!msg){
+return;
+}
 
 await addDoc(
-collection(db,"mutedUsers"),
+collection(db,"pinnedMessages"),
 {
-user:name,
+msg:msg,
 time:Date.now()
 }
 );
 
 addLog(
-"🔇 " + name + " muted"
+"📌 Message Pinned"
 );
 
 alert(
-name + " muted 🔇"
+"Pinned 📌"
 );
 
 }
@@ -792,10 +669,99 @@ name + " kicked 🚫"
 
 }
 
+/* MUTE */
+
+window.muteUser =
+async function(name){
+
+await addDoc(
+collection(db,"mutedUsers"),
+{
+user:name,
+time:Date.now()
+}
+);
+
+addLog(
+"🔇 " + name + " muted"
+);
+
+alert(
+name + " muted 🔇"
+);
+
+}
+
+/* SEAT REQUEST */
+
+const requestQuery =
+query(
+collection(db,"seatRequests"),
+orderBy("time")
+);
+
+onSnapshot(
+requestQuery,
+(snapshot)=>{
+
+let html = "";
+
+snapshot.forEach((docx)=>{
+
+let data =
+docx.data();
+
+html += `
+
+<div class="user">
+
+<div>
+
+<div class="user-name">
+${data.user}
+</div>
+
+<div class="user-status">
+✋ Raise Hand
+</div>
+
+</div>
+
+<div class="actions">
+
+<button
+class="action-btn green"
+onclick="approveSeat('${data.user}','${docx.id}')"
+>
+✅
+</button>
+
+<button
+class="action-btn red"
+onclick="rejectSeat('${docx.id}')"
+>
+❌
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"seatRequestBox"
+).innerHTML =
+html;
+
+});
+
 /* APPROVE */
 
 window.approveSeat =
-async function(name){
+async function(name,id){
 
 await addDoc(
 collection(db,"seatApproved"),
@@ -805,8 +771,12 @@ time:Date.now()
 }
 );
 
+await deleteDoc(
+doc(db,"seatRequests",id)
+);
+
 addLog(
-"✅ " + name + " approved seat"
+"✅ " + name + " approved"
 );
 
 alert(
@@ -818,25 +788,114 @@ name + " approved ✅"
 /* REJECT */
 
 window.rejectSeat =
-async function(name){
+async function(id){
 
-await addDoc(
-collection(db,"seatRejected"),
-{
-user:name,
-time:Date.now()
-}
+await deleteDoc(
+doc(db,"seatRequests",id)
 );
 
 addLog(
-"❌ " + name + " rejected"
+"❌ Seat Request Rejected"
 );
 
 alert(
-name + " rejected ❌"
+"Rejected ❌"
 );
 
 }
+
+/* LIVE SPEAKERS */
+
+const seatQuery =
+query(
+collection(db,"activeSpeakers"),
+orderBy("time")
+);
+
+onSnapshot(
+seatQuery,
+(snapshot)=>{
+
+let html = "";
+
+snapshot.forEach((docx)=>{
+
+let data =
+docx.data();
+
+html += `
+
+<div
+class="seat"
+id="seat_${data.user}"
+>
+
+<img
+src="https://i.imgur.com/6VBx3io.png"
+>
+
+<div class="username">
+${data.user}
+</div>
+
+<div class="status">
+🎤 Speaker
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"seatContainer"
+).innerHTML =
+html;
+
+});
+
+/* SPEAKING STATUS */
+
+const voiceQuery =
+query(
+collection(db,"voiceStatus"),
+orderBy("time")
+);
+
+onSnapshot(
+voiceQuery,
+(snapshot)=>{
+
+snapshot.forEach((docx)=>{
+
+let data =
+docx.data();
+
+let seat =
+document.getElementById(
+"seat_" + data.user
+);
+
+if(!seat){
+return;
+}
+
+if(data.speaking){
+
+seat.style.boxShadow =
+"0 0 30px #00ff66";
+
+}else{
+
+seat.style.boxShadow =
+"none";
+
+}
+
+});
+
+});
 
 </script>
 
