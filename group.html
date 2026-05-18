@@ -44,6 +44,17 @@ left:0;
 z-index:1000;
 }
 
+.left-top{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.back-btn{
+font-size:24px;
+cursor:pointer;
+}
+
 .room-info{
 display:flex;
 flex-direction:column;
@@ -70,7 +81,7 @@ font-size:14px;
 cursor:pointer;
 }
 
-/* VOICE BUTTONS */
+/* VOICE */
 
 .voice-controls{
 position:fixed;
@@ -117,7 +128,6 @@ padding:20px;
 border-radius:20px;
 text-align:center;
 position:relative;
-cursor:pointer;
 }
 
 .seat img{
@@ -169,7 +179,7 @@ color:#aaa;
 
 .comment-area{
 padding:15px;
-margin-bottom:100px;
+margin-bottom:120px;
 }
 
 .comment{
@@ -181,7 +191,7 @@ font-size:15px;
 word-wrap:break-word;
 }
 
-/* SEND */
+/* SEND BOX */
 
 .send-box{
 width:100%;
@@ -232,6 +242,15 @@ cursor:pointer;
 
 <div class="topbar">
 
+<div class="left-top">
+
+<div
+class="back-btn"
+onclick="history.back()"
+>
+⬅
+</div>
+
 <div class="room-info">
 
 <div
@@ -245,7 +264,9 @@ id="roomName"
 class="room-online"
 id="onlineText"
 >
-🟢 Voice Room Live
+🟢 Voice Connected
+</div>
+
 </div>
 
 </div>
@@ -256,7 +277,7 @@ Admin
 
 </div>
 
-<!-- VOICE -->
+<!-- VOICE BUTTONS -->
 
 <div class="voice-controls">
 
@@ -382,10 +403,7 @@ collection,
 addDoc,
 query,
 orderBy,
-onSnapshot,
-doc,
-setDoc,
-getDoc
+onSnapshot
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -393,17 +411,23 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 
-apiKey:"YOUR_API_KEY",
+apiKey:
+"AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
 
-authDomain:"YOUR_AUTH_DOMAIN",
+authDomain:
+"nammaapp-e8b13.firebaseapp.com",
 
-projectId:"YOUR_PROJECT_ID",
+projectId:
+"nammaapp-e8b13",
 
-storageBucket:"YOUR_STORAGE_BUCKET",
+storageBucket:
+"nammaapp-e8b13.firebasestorage.app",
 
-messagingSenderId:"YOUR_SENDER_ID",
+messagingSenderId:
+"1068448599469",
 
-appId:"YOUR_APP_ID"
+appId:
+"1:1068448599469:web:8f02d17e456597de75e524"
 
 };
 
@@ -413,12 +437,7 @@ initializeApp(firebaseConfig);
 const db =
 getFirestore(app);
 
-/* ROOM */
-
-const roomId =
-"tamil-room";
-
-/* COMMENT */
+/* COMMENT SEND */
 
 window.sendMsg =
 async function(){
@@ -432,13 +451,21 @@ if(msg.trim() == ""){
 return;
 }
 
+let username =
+localStorage.getItem(
+"username"
+) || "Guest";
+
 await addDoc(
 collection(db,"groupComments"),
 {
+user:username,
 msg:msg,
 time:Date.now()
 }
 );
+
+/* CLEAR INPUT */
 
 document.getElementById(
 "msg"
@@ -468,7 +495,8 @@ docx.data();
 html += `
 
 <div class="comment">
-👤 ${data.msg}
+👤 <b>${data.user}</b> :
+${data.msg}
 </div>
 
 `;
@@ -501,20 +529,7 @@ let micEnabled = true;
 
 let speakerOn = true;
 
-let peerConnection;
-
-const servers = {
-
-iceServers:[
-{
-urls:
-"stun:stun.l.google.com:19302"
-}
-]
-
-};
-
-/* START VOICE */
+/* START MIC */
 
 async function startVoice(){
 
@@ -527,190 +542,7 @@ await navigator
 audio:true
 });
 
-peerConnection =
-new RTCPeerConnection(
-servers
-);
-
-/* ADD TRACK */
-
-localStream
-.getTracks()
-.forEach(track=>{
-
-peerConnection
-.addTrack(
-track,
-localStream
-);
-
-});
-
-/* RECEIVE AUDIO */
-
-peerConnection.ontrack =
-(event)=>{
-
-let audio =
-document.createElement(
-"audio"
-);
-
-audio.srcObject =
-event.streams[0];
-
-audio.autoplay = true;
-
-document.body.appendChild(
-audio
-);
-
-};
-
-/* ICE */
-
-peerConnection.onicecandidate =
-async(event)=>{
-
-if(event.candidate){
-
-await setDoc(
-doc(db,"voiceRooms",roomId),
-{
-candidate:
-JSON.stringify(
-event.candidate
-)
-},
-{
-merge:true
-}
-);
-
-}
-
-};
-
-/* SPEAK DETECT */
-
 startSpeakingDetect();
-
-/* CREATE OFFER */
-
-const roomDoc =
-await getDoc(
-doc(db,"voiceRooms",roomId)
-);
-
-if(!roomDoc.exists()){
-
-const offer =
-await peerConnection
-.createOffer();
-
-await peerConnection
-.setLocalDescription(
-offer
-);
-
-await setDoc(
-doc(db,"voiceRooms",roomId),
-{
-offer:{
-type:offer.type,
-sdp:offer.sdp
-}
-}
-);
-
-}else{
-
-const data =
-roomDoc.data();
-
-if(data.offer){
-
-await peerConnection
-.setRemoteDescription(
-new RTCSessionDescription(
-data.offer
-)
-);
-
-const answer =
-await peerConnection
-.createAnswer();
-
-await peerConnection
-.setLocalDescription(
-answer
-);
-
-await setDoc(
-doc(db,"voiceRooms",roomId),
-{
-offer:data.offer,
-answer:{
-type:answer.type,
-sdp:answer.sdp
-}
-}
-);
-
-}
-
-}
-
-/* LISTEN */
-
-onSnapshot(
-doc(db,"voiceRooms",roomId),
-async(snapshot)=>{
-
-const data =
-snapshot.data();
-
-if(
-data?.answer &&
-!peerConnection.currentRemoteDescription
-){
-
-await peerConnection
-.setRemoteDescription(
-new RTCSessionDescription(
-data.answer
-)
-);
-
-}
-
-if(data?.candidate){
-
-try{
-
-await peerConnection
-.addIceCandidate(
-new RTCIceCandidate(
-JSON.parse(
-data.candidate
-)
-)
-);
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-});
-
-document.getElementById(
-"onlineText"
-).innerHTML =
-"🟢 Voice Connected";
 
 }catch(err){
 
@@ -718,13 +550,9 @@ alert(
 "Mic Permission Denied ❌"
 );
 
-console.log(err);
-
 }
 
 }
-
-/* AUTO START */
 
 startVoice();
 
@@ -734,9 +562,7 @@ window.toggleMic =
 function(){
 
 if(!localStream){
-
 return;
-
 }
 
 micEnabled =
@@ -783,18 +609,6 @@ function(){
 speakerOn =
 !speakerOn;
 
-let audios =
-document.querySelectorAll(
-"audio"
-);
-
-audios.forEach(audio=>{
-
-audio.muted =
-!speakerOn;
-
-});
-
 if(speakerOn){
 
 document.getElementById(
@@ -823,7 +637,7 @@ document.getElementById(
 
 }
 
-/* SPEAK DETECT */
+/* SPEAKING DETECT */
 
 function startSpeakingDetect(){
 
