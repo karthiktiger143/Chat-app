@@ -178,6 +178,7 @@ padding:12px;
 border-radius:15px;
 margin-top:10px;
 font-size:15px;
+word-wrap:break-word;
 }
 
 /* SEND */
@@ -240,7 +241,10 @@ id="roomName"
 🔥 Tamil Room
 </div>
 
-<div class="room-online">
+<div
+class="room-online"
+id="onlineText"
+>
 🟢 Voice Room Live
 </div>
 
@@ -363,11 +367,61 @@ onclick="sendMsg()"
 
 </div>
 
-<script>
+<script type="module">
+
+/* FIREBASE */
+
+import {
+initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+orderBy,
+onSnapshot,
+doc,
+setDoc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+apiKey:"YOUR_API_KEY",
+
+authDomain:"YOUR_AUTH_DOMAIN",
+
+projectId:"YOUR_PROJECT_ID",
+
+storageBucket:"YOUR_STORAGE_BUCKET",
+
+messagingSenderId:"YOUR_SENDER_ID",
+
+appId:"YOUR_APP_ID"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+/* ROOM */
+
+const roomId =
+"tamil-room";
 
 /* COMMENT */
 
-function sendMsg(){
+window.sendMsg =
+async function(){
 
 let msg =
 document.getElementById(
@@ -378,20 +432,13 @@ if(msg.trim() == ""){
 return;
 }
 
-let div =
-document.createElement(
-"div"
+await addDoc(
+collection(db,"groupComments"),
+{
+msg:msg,
+time:Date.now()
+}
 );
-
-div.className =
-"comment";
-
-div.innerHTML =
-"👤 You : " + msg;
-
-document.getElementById(
-"commentArea"
-).appendChild(div);
 
 document.getElementById(
 "msg"
@@ -399,9 +446,46 @@ document.getElementById(
 
 }
 
+/* LOAD COMMENTS */
+
+const commentQuery =
+query(
+collection(db,"groupComments"),
+orderBy("time")
+);
+
+onSnapshot(
+commentQuery,
+(snapshot)=>{
+
+let html = "";
+
+snapshot.forEach((docx)=>{
+
+let data =
+docx.data();
+
+html += `
+
+<div class="comment">
+👤 ${data.msg}
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"commentArea"
+).innerHTML =
+html;
+
+});
+
 /* EMOJI */
 
-function addEmoji(){
+window.addEmoji =
+function(){
 
 document.getElementById(
 "msg"
@@ -409,10 +493,12 @@ document.getElementById(
 
 }
 
-/* LIVE VOICE SYSTEM */
+/* LIVE VOICE */
 
 let localStream;
+
 let micEnabled = true;
+
 let speakerOn = true;
 
 let peerConnection;
@@ -428,7 +514,7 @@ urls:
 
 };
 
-/* START LIVE VOICE */
+/* START VOICE */
 
 async function startVoice(){
 
@@ -441,14 +527,12 @@ await navigator
 audio:true
 });
 
-console.log(
-"Voice Connected 🎤"
-);
-
 peerConnection =
 new RTCPeerConnection(
 servers
 );
+
+/* ADD TRACK */
 
 localStream
 .getTracks()
@@ -461,6 +545,8 @@ localStream
 );
 
 });
+
+/* RECEIVE AUDIO */
 
 peerConnection.ontrack =
 (event)=>{
@@ -481,13 +567,158 @@ audio
 
 };
 
+/* ICE */
+
+peerConnection.onicecandidate =
+async(event)=>{
+
+if(event.candidate){
+
+await setDoc(
+doc(db,"voiceRooms",roomId),
+{
+candidate:
+JSON.stringify(
+event.candidate
+)
+},
+{
+merge:true
+}
+);
+
+}
+
+};
+
+/* SPEAK DETECT */
+
 startSpeakingDetect();
+
+/* CREATE OFFER */
+
+const roomDoc =
+await getDoc(
+doc(db,"voiceRooms",roomId)
+);
+
+if(!roomDoc.exists()){
+
+const offer =
+await peerConnection
+.createOffer();
+
+await peerConnection
+.setLocalDescription(
+offer
+);
+
+await setDoc(
+doc(db,"voiceRooms",roomId),
+{
+offer:{
+type:offer.type,
+sdp:offer.sdp
+}
+}
+);
+
+}else{
+
+const data =
+roomDoc.data();
+
+if(data.offer){
+
+await peerConnection
+.setRemoteDescription(
+new RTCSessionDescription(
+data.offer
+)
+);
+
+const answer =
+await peerConnection
+.createAnswer();
+
+await peerConnection
+.setLocalDescription(
+answer
+);
+
+await setDoc(
+doc(db,"voiceRooms",roomId),
+{
+offer:data.offer,
+answer:{
+type:answer.type,
+sdp:answer.sdp
+}
+}
+);
+
+}
+
+}
+
+/* LISTEN */
+
+onSnapshot(
+doc(db,"voiceRooms",roomId),
+async(snapshot)=>{
+
+const data =
+snapshot.data();
+
+if(
+data?.answer &&
+!peerConnection.currentRemoteDescription
+){
+
+await peerConnection
+.setRemoteDescription(
+new RTCSessionDescription(
+data.answer
+)
+);
+
+}
+
+if(data?.candidate){
+
+try{
+
+await peerConnection
+.addIceCandidate(
+new RTCIceCandidate(
+JSON.parse(
+data.candidate
+)
+)
+);
+
+}catch(e){
+
+console.log(e);
+
+}
+
+}
+
+});
+
+document.getElementById(
+"onlineText"
+).innerHTML =
+"🟢 Voice Connected";
 
 }catch(err){
 
 alert(
 "Mic Permission Denied ❌"
 );
+
+console.log(err);
 
 }
 
@@ -504,7 +735,6 @@ function(){
 
 if(!localStream){
 
-startVoice();
 return;
 
 }
@@ -552,6 +782,18 @@ function(){
 
 speakerOn =
 !speakerOn;
+
+let audios =
+document.querySelectorAll(
+"audio"
+);
+
+audios.forEach(audio=>{
+
+audio.muted =
+!speakerOn;
+
+});
 
 if(speakerOn){
 
