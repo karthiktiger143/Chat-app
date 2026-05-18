@@ -70,7 +70,7 @@ font-size:14px;
 cursor:pointer;
 }
 
-/* VOICE CONTROLS */
+/* VOICE BUTTONS */
 
 .voice-controls{
 position:fixed;
@@ -145,8 +145,6 @@ right:10px;
 font-size:22px;
 }
 
-/* EMPTY SEAT */
-
 .empty-seat{
 background:#111;
 padding:20px;
@@ -180,10 +178,9 @@ padding:12px;
 border-radius:15px;
 margin-top:10px;
 font-size:15px;
-word-wrap:break-word;
 }
 
-/* SEND BOX */
+/* SEND */
 
 .send-box{
 width:100%;
@@ -219,148 +216,9 @@ font-size:18px;
 cursor:pointer;
 }
 
-.emoji,
-.gift{
+.emoji{
 font-size:24px;
 cursor:pointer;
-}
-
-/* PROFILE POPUP */
-
-.popup{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:9999;
-}
-
-.popup-box{
-width:90%;
-background:#111;
-padding:25px;
-border-radius:20px;
-text-align:center;
-}
-
-.popup-box img{
-width:90px;
-height:90px;
-border-radius:50%;
-}
-
-.popup-name{
-margin-top:15px;
-font-size:22px;
-font-weight:bold;
-}
-
-.popup-btn{
-margin-top:20px;
-width:100%;
-padding:15px;
-border:none;
-border-radius:15px;
-background:#0084ff;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-.close-btn{
-background:red;
-margin-top:10px;
-}
-
-/* SEAT REQUEST */
-
-#seatRequestPopup{
-display:none;
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:#111;
-padding:20px;
-border-radius:20px;
-width:90%;
-z-index:99999;
-border:1px solid #333;
-}
-
-.request-btns{
-display:flex;
-gap:10px;
-margin-top:20px;
-}
-
-.accept-btn{
-flex:1;
-padding:15px;
-border:none;
-border-radius:15px;
-background:#00aa55;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-.reject-btn{
-flex:1;
-padding:15px;
-border:none;
-border-radius:15px;
-background:red;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-/* SETTINGS PANEL */
-
-#settingsPanel{
-display:none;
-position:fixed;
-top:0;
-right:0;
-width:85%;
-height:100%;
-background:#111;
-z-index:99999;
-padding:20px;
-overflow:auto;
-}
-
-.setting-select{
-width:100%;
-padding:15px;
-margin-top:10px;
-border:none;
-border-radius:15px;
-background:#222;
-color:white;
-font-size:16px;
-}
-
-.setting-btn{
-width:100%;
-padding:16px;
-margin-top:20px;
-border:none;
-border-radius:15px;
-background:#0084ff;
-color:white;
-font-size:18px;
-cursor:pointer;
-}
-
-.close-setting-btn{
-background:red;
 }
 
 </style>
@@ -379,7 +237,7 @@ background:red;
 class="room-name"
 id="roomName"
 >
-🔥 Room
+🔥 Tamil Room
 </div>
 
 <div class="room-online">
@@ -388,16 +246,13 @@ id="roomName"
 
 </div>
 
-<button
-class="admin-btn"
-onclick="openSettings()"
->
+<button class="admin-btn">
 Admin
 </button>
 
 </div>
 
-<!-- VOICE BUTTONS -->
+<!-- VOICE -->
 
 <div class="voice-controls">
 
@@ -423,10 +278,7 @@ onclick="toggleSpeaker()"
 
 <div class="seats">
 
-<div
-class="seat"
-onclick="openProfile('Karthi')"
->
+<div class="seat">
 
 <div class="crown">
 👑
@@ -444,10 +296,7 @@ Karthi
 
 </div>
 
-<div
-class="seat"
-onclick="openProfile('Arun')"
->
+<div class="seat">
 
 <img src="https://i.imgur.com/6VBx3io.png">
 
@@ -461,59 +310,7 @@ Arun
 
 </div>
 
-<div
-class="seat"
-onclick="openProfile('Hari')"
->
-
-<img src="https://i.imgur.com/6VBx3io.png">
-
-<div class="username">
-Hari
-</div>
-
-<div class="status">
-🎧 Listening
-</div>
-
-</div>
-
-<div
-class="seat"
-onclick="openProfile('Vicky')"
->
-
-<img src="https://i.imgur.com/6VBx3io.png">
-
-<div class="username">
-Vicky
-</div>
-
-<div class="status">
-🎤 Speaking
-</div>
-
-</div>
-
-<div
-class="empty-seat"
-onclick="joinSeat()"
->
-
-<div class="plus">
-+
-</div>
-
-<div class="join-text">
-Join Seat
-</div>
-
-</div>
-
-<div
-class="empty-seat"
-onclick="joinSeat()"
->
+<div class="empty-seat">
 
 <div class="plus">
 +
@@ -533,9 +330,14 @@ Join Seat
 class="comment-area"
 id="commentArea"
 >
+
+<div class="comment">
+🔥 Welcome To Room
 </div>
 
-<!-- SEND BOX -->
+</div>
+
+<!-- SEND -->
 
 <div class="send-box">
 
@@ -544,13 +346,6 @@ class="emoji"
 onclick="addEmoji()"
 >
 😊
-</div>
-
-<div
-class="gift"
-onclick="sendGift()"
->
-🎁
 </div>
 
 <input
@@ -568,218 +363,11 @@ onclick="sendMsg()"
 
 </div>
 
-<!-- PROFILE POPUP -->
+<script>
 
-<div
-class="popup"
-id="popup"
->
+/* COMMENT */
 
-<div class="popup-box">
-
-<img src="https://i.imgur.com/6VBx3io.png">
-
-<div
-class="popup-name"
-id="popupName"
->
-User
-</div>
-
-<button
-class="popup-btn"
-onclick="sendRequest()"
->
-Send Message Request
-</button>
-
-<button
-class="popup-btn"
-onclick="followUser()"
->
-Follow User
-</button>
-
-<button
-class="popup-btn close-btn"
-onclick="closePopup()"
->
-Close
-</button>
-
-</div>
-
-</div>
-
-<!-- SEAT REQUEST -->
-
-<div id="seatRequestPopup">
-
-<h3>
-🎤 Seat Request
-</h3>
-
-<div
-id="requestUser"
-style="
-margin-top:15px;
-font-size:18px;
-"
->
-User wants to join seat
-</div>
-
-<div class="request-btns">
-
-<button
-class="accept-btn"
-onclick="acceptSeat()"
->
-Accept
-</button>
-
-<button
-class="reject-btn"
-onclick="rejectSeat()"
->
-Reject
-</button>
-
-</div>
-
-</div>
-
-<!-- SETTINGS -->
-
-<div id="settingsPanel">
-
-<h2>
-⚙️ Group Settings
-</h2>
-
-<div style="margin-top:20px;">
-
-<h3>
-Room Type
-</h3>
-
-<select
-class="setting-select"
->
-
-<option>
-Public
-</option>
-
-<option>
-Private
-</option>
-
-</select>
-
-</div>
-
-<div style="margin-top:20px;">
-
-<h3>
-Seat Permission
-</h3>
-
-<select
-class="setting-select"
->
-
-<option>
-Manual Accept
-</option>
-
-<option>
-Auto Accept
-</option>
-
-</select>
-
-</div>
-
-<button
-class="setting-btn"
-onclick="saveSettings()"
->
-Save Settings
-</button>
-
-<button
-class="setting-btn close-setting-btn"
-onclick="closeSettings()"
->
-Close
-</button>
-
-</div>
-
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-query,
-orderBy,
-onSnapshot
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* ROOM NAME */
-
-document.getElementById(
-"roomName"
-).innerHTML =
-"🔥 " +
-(
-localStorage.getItem(
-"roomName"
-) || "Tamil"
-)
-+
-" Room";
-
-/* FIREBASE */
-
-const firebaseConfig = {
-
-apiKey:
-"YOUR_API_KEY",
-
-authDomain:
-"YOUR_AUTH_DOMAIN",
-
-projectId:
-"YOUR_PROJECT_ID",
-
-storageBucket:
-"YOUR_STORAGE_BUCKET",
-
-messagingSenderId:
-"YOUR_SENDER_ID",
-
-appId:
-"YOUR_APP_ID"
-
-};
-
-const app =
-initializeApp(firebaseConfig);
-
-const db =
-getFirestore(app);
-
-/* SEND MESSAGE */
-
-window.sendMsg =
-async function(){
+function sendMsg(){
 
 let msg =
 document.getElementById(
@@ -790,26 +378,20 @@ if(msg.trim() == ""){
 return;
 }
 
-let user =
-localStorage.getItem(
-"username"
-) || "Guest";
-
-await addDoc(
-collection(db,"groupComments"),
-{
-room:
-localStorage.getItem(
-"roomName"
-),
-
-user:user,
-
-msg:msg,
-
-time:Date.now()
-}
+let div =
+document.createElement(
+"div"
 );
+
+div.className =
+"comment";
+
+div.innerHTML =
+"👤 You : " + msg;
+
+document.getElementById(
+"commentArea"
+).appendChild(div);
 
 document.getElementById(
 "msg"
@@ -817,54 +399,9 @@ document.getElementById(
 
 }
 
-/* LOAD COMMENTS */
-
-const q =
-query(
-collection(db,"groupComments"),
-orderBy("time")
-);
-
-onSnapshot(q,(snapshot)=>{
-
-let html = "";
-
-snapshot.forEach((doc)=>{
-
-let data =
-doc.data();
-
-if(
-data.room ==
-localStorage.getItem(
-"roomName"
-)
-){
-
-html += `
-
-<div class="comment">
-<b>${data.user}</b> :
-${data.msg}
-</div>
-
-`;
-
-}
-
-});
-
-document.getElementById(
-"commentArea"
-).innerHTML =
-html;
-
-});
-
 /* EMOJI */
 
-window.addEmoji =
-function(){
+function addEmoji(){
 
 document.getElementById(
 "msg"
@@ -872,180 +409,90 @@ document.getElementById(
 
 }
 
-/* GIFT */
+/* REAL VOICE SYSTEM */
 
-window.sendGift =
-function(){
+let localStream;
+let micEnabled = true;
+let speakerOn = true;
+
+/* START MIC */
+
+async function startVoice(){
+
+try{
+
+localStream =
+await navigator
+.mediaDevices
+.getUserMedia({
+audio:true
+});
+
+console.log(
+"Voice Connected 🎤"
+);
+
+/* START DETECT */
+
+startSpeakingDetect();
+
+}catch(err){
 
 alert(
-"Gift Sent 🎁"
+"Mic Permission Denied ❌"
 );
 
 }
 
-/* JOIN SEAT */
-
-window.joinSeat =
-function(){
-
-let user =
-localStorage.getItem(
-"username"
-) || "Guest";
-
-document.getElementById(
-"seatRequestPopup"
-).style.display =
-"block";
-
-document.getElementById(
-"requestUser"
-).innerHTML =
-user +
-" wants to join seat";
-
 }
 
-/* ACCEPT */
+/* AUTO START */
 
-window.acceptSeat =
-function(){
-
-alert(
-"Seat Request Accepted 🔥"
-);
-
-document.getElementById(
-"seatRequestPopup"
-).style.display =
-"none";
-
-}
-
-/* REJECT */
-
-window.rejectSeat =
-function(){
-
-alert(
-"Seat Request Rejected ❌"
-);
-
-document.getElementById(
-"seatRequestPopup"
-).style.display =
-"none";
-
-}
-
-/* PROFILE */
-
-window.openProfile =
-function(name){
-
-document.getElementById(
-"popup"
-).style.display =
-"flex";
-
-document.getElementById(
-"popupName"
-).innerHTML =
-name;
-
-}
-
-window.closePopup =
-function(){
-
-document.getElementById(
-"popup"
-).style.display =
-"none";
-
-}
-
-window.sendRequest =
-function(){
-
-alert(
-"Message request sent 🔥"
-);
-
-}
-
-window.followUser =
-function(){
-
-alert(
-"User followed 🔥"
-);
-
-}
-
-/* SETTINGS */
-
-window.openSettings =
-function(){
-
-document.getElementById(
-"settingsPanel"
-).style.display =
-"block";
-
-}
-
-window.closeSettings =
-function(){
-
-document.getElementById(
-"settingsPanel"
-).style.display =
-"none";
-
-}
-
-window.saveSettings =
-function(){
-
-alert(
-"Settings Saved 🔥"
-);
-
-closeSettings();
-
-}
+startVoice();
 
 /* MIC */
-
-let micOn = false;
 
 window.toggleMic =
 function(){
 
-micOn = !micOn;
+if(!localStream){
 
-if(micOn){
+startVoice();
+return;
+
+}
+
+micEnabled =
+!micEnabled;
+
+localStream
+.getAudioTracks()[0]
+.enabled =
+micEnabled;
+
+if(micEnabled){
 
 document.getElementById(
 "micBtn"
 ).innerHTML =
 "🎙️";
 
-alert(
-"Mic ON 🎤"
-);
+document.getElementById(
+"micBtn"
+).style.background =
+"#0084ff";
 
 }else{
 
 document.getElementById(
 "micBtn"
 ).innerHTML =
-"🎤";
+"🔇";
 
-alert(
-"Mic OFF"
-);
+document.getElementById(
+"micBtn"
+).style.background =
+"red";
 
 }
 
@@ -1053,12 +500,11 @@ alert(
 
 /* SPEAKER */
 
-let speakerOn = true;
-
 window.toggleSpeaker =
 function(){
 
-speakerOn = !speakerOn;
+speakerOn =
+!speakerOn;
 
 if(speakerOn){
 
@@ -1067,9 +513,10 @@ document.getElementById(
 ).innerHTML =
 "🔊";
 
-alert(
-"Speaker ON 🔊"
-);
+document.getElementById(
+"speakerBtn"
+).style.background =
+"#00aa55";
 
 }else{
 
@@ -1078,16 +525,90 @@ document.getElementById(
 ).innerHTML =
 "🔇";
 
-alert(
-"Speaker OFF"
+document.getElementById(
+"speakerBtn"
+).style.background =
+"red";
+
+}
+
+}
+
+/* SPEAK DETECT */
+
+function startSpeakingDetect(){
+
+const audioContext =
+new AudioContext();
+
+const analyser =
+audioContext.createAnalyser();
+
+const microphone =
+audioContext
+.createMediaStreamSource(
+localStream
+);
+
+microphone.connect(
+analyser
+);
+
+analyser.fftSize = 256;
+
+const dataArray =
+new Uint8Array(
+analyser.frequencyBinCount
+);
+
+function detectSpeaking(){
+
+analyser.getByteFrequencyData(
+dataArray
+);
+
+let volume = 0;
+
+for(
+let i = 0;
+i < dataArray.length;
+i++
+){
+
+volume += dataArray[i];
+
+}
+
+volume =
+volume / dataArray.length;
+
+if(volume > 20){
+
+document.getElementById(
+"micBtn"
+).style.boxShadow =
+"0 0 30px #00ff66";
+
+}else{
+
+document.getElementById(
+"micBtn"
+).style.boxShadow =
+"none";
+
+}
+
+requestAnimationFrame(
+detectSpeaking
 );
 
 }
+
+detectSpeaking();
 
 }
 
 </script>
 
 </body>
-
 </html>
