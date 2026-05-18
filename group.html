@@ -81,11 +81,39 @@ font-size:14px;
 cursor:pointer;
 }
 
+/* LINK */
+
+.link-box{
+padding:90px 15px 0px;
+}
+
+.room-link{
+background:#111;
+padding:15px;
+border-radius:15px;
+margin-top:10px;
+word-break:break-all;
+font-size:14px;
+border:1px solid #222;
+}
+
+.copy-btn{
+width:100%;
+padding:14px;
+margin-top:10px;
+background:#0084ff;
+border:none;
+border-radius:14px;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
 /* VOICE */
 
 .voice-controls{
 position:fixed;
-top:90px;
+top:170px;
 right:15px;
 display:flex;
 flex-direction:column;
@@ -114,7 +142,7 @@ background:#00aa55;
 /* SEATS */
 
 .seats{
-padding-top:90px;
+padding-top:20px;
 padding-left:15px;
 padding-right:15px;
 display:grid;
@@ -128,6 +156,7 @@ padding:20px;
 border-radius:20px;
 text-align:center;
 position:relative;
+transition:0.3s;
 }
 
 .seat img{
@@ -146,13 +175,6 @@ font-weight:bold;
 margin-top:5px;
 font-size:14px;
 color:#00ff66;
-}
-
-.crown{
-position:absolute;
-top:10px;
-right:10px;
-font-size:22px;
 }
 
 .empty-seat{
@@ -256,7 +278,7 @@ onclick="history.back()"
 class="room-name"
 id="roomName"
 >
-🔥 Tamil Room
+🔥 Voice Room
 </div>
 
 <div
@@ -270,8 +292,31 @@ id="onlineText"
 
 </div>
 
-<button class="admin-btn">
+<button
+class="admin-btn"
+onclick="location.href='admin.html'"
+>
 Admin
+</button>
+
+</div>
+
+<!-- ROOM LINK -->
+
+<div class="link-box">
+
+<div
+class="room-link"
+id="roomLink"
+>
+Loading room link...
+</div>
+
+<button
+class="copy-btn"
+onclick="copyRoomLink()"
+>
+📋 Copy Room Link
 </button>
 
 </div>
@@ -405,12 +450,71 @@ localStorage.getItem(
 ||
 "Guest";
 
+/* ROOM */
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+let roomId =
+params.get("room");
+
+/* CREATE ROOM */
+
+if(!roomId){
+
+roomId =
+Math.random()
+.toString(36)
+.substring(2,8);
+
+window.location.href =
+window.location.pathname +
+"?room=" +
+roomId;
+
+}
+
+/* ROOM LINK */
+
+const roomLink =
+window.location.origin +
+window.location.pathname +
+"?room=" +
+roomId;
+
+document.getElementById(
+"roomLink"
+).innerHTML =
+roomLink;
+
+document.getElementById(
+"roomName"
+).innerHTML =
+"🔥 Room : " + roomId;
+
+/* COPY LINK */
+
+window.copyRoomLink =
+function(){
+
+navigator.clipboard
+.writeText(roomLink);
+
+alert(
+"📋 Room Link Copied"
+);
+
+}
+
 /* JOIN ROOM */
 
 const joinRef =
 await addDoc(
 collection(db,"roomUsers"),
 {
+room:roomId,
 name:username,
 time:Date.now()
 }
@@ -432,7 +536,7 @@ joinRef.id
 
 });
 
-/* LOAD USERS */
+/* USERS */
 
 const seatBox =
 document.getElementById(
@@ -455,10 +559,14 @@ let count = 0;
 
 snapshot.forEach((docx)=>{
 
-count++;
-
 let data =
 docx.data();
+
+if(data.room !== roomId){
+return;
+}
+
+count++;
 
 seatBox.innerHTML += `
 
@@ -479,8 +587,6 @@ ${data.name}
 `;
 
 });
-
-/* EMPTY */
 
 for(
 let i = count;
@@ -515,7 +621,7 @@ count +
 
 });
 
-/* COMMENTS */
+/* SEND MSG */
 
 window.sendMsg =
 async function(){
@@ -525,13 +631,14 @@ document.getElementById(
 "msg"
 ).value;
 
-if(msg.trim() == ""){
+if(msg.trim()==""){
 return;
 }
 
 await addDoc(
 collection(db,"groupComments"),
 {
+room:roomId,
 user:username,
 msg:msg,
 time:Date.now()
@@ -562,6 +669,10 @@ snapshot.forEach((docx)=>{
 
 let data =
 docx.data();
+
+if(data.room !== roomId){
+return;
+}
 
 html += `
 
