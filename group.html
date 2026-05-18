@@ -10,7 +10,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 />
 
-<title>Group Room</title>
+<title>Ultimate Group Room</title>
 
 <style>
 
@@ -25,6 +25,7 @@ body{
 background:#000;
 color:white;
 overflow-x:hidden;
+padding-bottom:120px;
 }
 
 /* TOPBAR */
@@ -67,6 +68,36 @@ border-radius:12px;
 color:white;
 font-size:14px;
 cursor:pointer;
+}
+
+/* VOICE CONTROLS */
+
+.voice-controls{
+position:fixed;
+top:90px;
+right:15px;
+display:flex;
+flex-direction:column;
+gap:10px;
+z-index:9999;
+}
+
+.voice-btn{
+width:60px;
+height:60px;
+border:none;
+border-radius:50%;
+font-size:24px;
+color:white;
+cursor:pointer;
+}
+
+.mic-btn{
+background:#0084ff;
+}
+
+.speaker-btn{
+background:#00aa55;
 }
 
 /* SEATS */
@@ -246,7 +277,7 @@ background:red;
 margin-top:10px;
 }
 
-/* SEAT REQUEST POPUP */
+/* SEAT REQUEST */
 
 #seatRequestPopup{
 display:none;
@@ -352,7 +383,7 @@ id="roomName"
 </div>
 
 <div class="room-online">
-8 Members Online
+🟢 8 Members Online
 </div>
 
 </div>
@@ -362,6 +393,28 @@ class="admin-btn"
 onclick="openSettings()"
 >
 Admin
+</button>
+
+</div>
+
+<!-- VOICE CONTROLS -->
+
+<div class="voice-controls">
+
+<button
+id="micBtn"
+class="voice-btn mic-btn"
+onclick="toggleMic()"
+>
+🎤
+</button>
+
+<button
+id="speakerBtn"
+class="voice-btn speaker-btn"
+onclick="toggleSpeaker()"
+>
+🔊
 </button>
 
 </div>
@@ -769,25 +822,22 @@ localStorage.getItem(
 const firebaseConfig = {
 
 apiKey:
-"AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
+"YOUR_API_KEY",
 
 authDomain:
-"nammaapp-e8b13.firebaseapp.com",
+"YOUR_AUTH_DOMAIN",
 
 projectId:
-"nammaapp-e8b13",
+"YOUR_PROJECT_ID",
 
 storageBucket:
-"nammaapp-e8b13.firebasestorage.app",
+"YOUR_STORAGE_BUCKET",
 
 messagingSenderId:
-"1068448599469",
+"YOUR_SENDER_ID",
 
 appId:
-"1:1068448599469:web:8f02d17e456597de75e524",
-
-measurementId:
-"G-ZGL72NLPVS"
+"YOUR_APP_ID"
 
 };
 
@@ -1034,6 +1084,76 @@ alert(
 );
 
 closeSettings();
+
+}
+
+/* MIC */
+
+let micOn = false;
+
+window.toggleMic =
+function(){
+
+micOn = !micOn;
+
+if(micOn){
+
+document.getElementById(
+"micBtn"
+).innerHTML =
+"🎙️";
+
+alert(
+"Mic ON 🎤"
+);
+
+}else{
+
+document.getElementById(
+"micBtn"
+).innerHTML =
+"🎤";
+
+alert(
+"Mic OFF"
+);
+
+}
+
+}
+
+/* SPEAKER */
+
+let speakerOn = true;
+
+window.toggleSpeaker =
+function(){
+
+speakerOn = !speakerOn;
+
+if(speakerOn){
+
+document.getElementById(
+"speakerBtn"
+).innerHTML =
+"🔊";
+
+alert(
+"Speaker ON 🔊"
+);
+
+}else{
+
+document.getElementById(
+"speakerBtn"
+).innerHTML =
+"🔇";
+
+alert(
+"Speaker OFF"
+);
+
+}
 
 }
 
