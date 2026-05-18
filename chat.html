@@ -1,13 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 
-<title>Ultimate Chat</title>
+<meta charset="UTF-8">
 
 <meta
 name="viewport"
 content="width=device-width, initial-scale=1.0"
->
+/>
+
+<title>Ultimate Chat</title>
 
 <style>
 
@@ -200,6 +203,19 @@ cursor:pointer;
 display:none;
 }
 
+/* REC BUTTON */
+
+.record-btn{
+width:50px;
+height:50px;
+border:none;
+border-radius:50%;
+background:red;
+color:white;
+font-size:22px;
+cursor:pointer;
+}
+
 </style>
 
 </head>
@@ -232,7 +248,10 @@ id="chatName"
 Chat
 </div>
 
-<div class="online">
+<div
+class="online"
+id="onlineStatus"
+>
 🟢 Online
 </div>
 
@@ -249,7 +268,7 @@ id="typingStatus"
 </div>
 
 <div class="top-icons">
-📞 🎥
+📞 🎥 🌙
 </div>
 
 </div>
@@ -257,7 +276,7 @@ id="typingStatus"
 <!-- PINNED -->
 
 <div class="pinned">
-📌 Welcome to private chat 🔥
+📌 Welcome to Ultimate Chat 🔥
 </div>
 
 <!-- CHAT -->
@@ -290,8 +309,15 @@ onclick="pickImage()"
 class="icon"
 onclick="pickAudio()"
 >
-🎤
+🎵
 </div>
+
+<button
+class="record-btn"
+id="recordBtn"
+>
+🎤
+</button>
 
 <input
 type="file"
@@ -346,23 +372,12 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 
-apiKey:
-"YOUR_API_KEY",
-
-authDomain:
-"YOUR_AUTH_DOMAIN",
-
-projectId:
-"YOUR_PROJECT_ID",
-
-storageBucket:
-"YOUR_STORAGE_BUCKET",
-
-messagingSenderId:
-"YOUR_SENDER_ID",
-
-appId:
-"YOUR_APP_ID"
+apiKey:"YOUR_API_KEY",
+authDomain:"YOUR_AUTH_DOMAIN",
+projectId:"YOUR_PROJECT_ID",
+storageBucket:"YOUR_STORAGE_BUCKET",
+messagingSenderId:"YOUR_SENDER_ID",
+appId:"YOUR_APP_ID"
 
 };
 
@@ -424,7 +439,7 @@ document.getElementById(
 
 }
 
-/* LOAD MESSAGES */
+/* LOAD */
 
 const q =
 query(
@@ -485,9 +500,7 @@ controls
 class="audio-player"
 >
 <source
-src="${data.audio}"
-type="audio/mp3"
->
+src="${data.audio}">
 </audio>
 `
 :
@@ -495,7 +508,7 @@ type="audio/mp3"
 }
 
 <div class="react">
-❤️ 😂 🔥
+❤️ 😂 🔥 👍
 </div>
 
 <div class="msg-time">
@@ -503,7 +516,7 @@ Now
 </div>
 
 <div class="seen">
-✓✓ Seen
+✔✔ Seen
 </div>
 
 <div
@@ -633,6 +646,86 @@ time:Date.now()
 reader.readAsDataURL(file);
 
 }
+
+/* VOICE RECORD */
+
+let mediaRecorder;
+let audioChunks = [];
+
+const recordBtn =
+document.getElementById(
+"recordBtn"
+);
+
+recordBtn.onmousedown =
+async function(){
+
+let stream =
+await navigator
+.mediaDevices
+.getUserMedia({
+audio:true
+});
+
+mediaRecorder =
+new MediaRecorder(stream);
+
+mediaRecorder.start();
+
+audioChunks = [];
+
+mediaRecorder.ondataavailable =
+e => {
+
+audioChunks.push(e.data);
+
+};
+
+recordBtn.innerHTML =
+"🔴";
+
+};
+
+recordBtn.onmouseup =
+function(){
+
+mediaRecorder.stop();
+
+mediaRecorder.onstop =
+async function(){
+
+let blob =
+new Blob(audioChunks,{
+type:"audio/mp3"
+});
+
+let reader =
+new FileReader();
+
+reader.onload =
+async function(e){
+
+await addDoc(
+collection(db,"messages"),
+{
+name:currentUser,
+target:targetUser,
+audio:e.target.result,
+type:"audio",
+time:Date.now()
+}
+);
+
+};
+
+reader.readAsDataURL(blob);
+
+};
+
+recordBtn.innerHTML =
+"🎤";
+
+};
 
 /* EMOJI */
 
