@@ -10,7 +10,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 />
 
-<title>Ultimate Live Group Room</title>
+<title>Ultimate Group Room</title>
 
 <style>
 
@@ -81,7 +81,7 @@ font-size:14px;
 cursor:pointer;
 }
 
-/* VOICE BUTTONS */
+/* VOICE */
 
 .voice-controls{
 position:fixed;
@@ -161,7 +161,6 @@ padding:20px;
 border-radius:20px;
 text-align:center;
 border:2px dashed #333;
-cursor:pointer;
 }
 
 .plus{
@@ -191,7 +190,7 @@ font-size:15px;
 word-wrap:break-word;
 }
 
-/* SEND BOX */
+/* SEND */
 
 .send-box{
 width:100%;
@@ -264,7 +263,7 @@ id="roomName"
 class="room-online"
 id="onlineText"
 >
-🟢 Connecting Voice...
+🟢 0 Members Online
 </div>
 
 </div>
@@ -301,52 +300,10 @@ onclick="toggleSpeaker()"
 
 <!-- SEATS -->
 
-<div class="seats">
-
-<div class="seat">
-
-<div class="crown">
-👑
-</div>
-
-<img src="https://i.imgur.com/6VBx3io.png">
-
-<div class="username">
-Karthi
-</div>
-
-<div class="status">
-🎤 Speaking
-</div>
-
-</div>
-
-<div class="seat">
-
-<img src="https://i.imgur.com/6VBx3io.png">
-
-<div class="username">
-Arun
-</div>
-
-<div class="status">
-🎧 Listening
-</div>
-
-</div>
-
-<div class="empty-seat">
-
-<div class="plus">
-+
-</div>
-
-<div class="join-text">
-Join Seat
-</div>
-
-</div>
-
+<div
+class="seats"
+id="seatBox"
+>
 </div>
 
 <!-- COMMENTS -->
@@ -404,9 +361,8 @@ addDoc,
 query,
 orderBy,
 onSnapshot,
-doc,
-setDoc,
-getDoc
+deleteDoc,
+doc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -440,10 +396,124 @@ initializeApp(firebaseConfig);
 const db =
 getFirestore(app);
 
-/* ROOM */
+/* USER */
 
-const roomId =
-"ultimate-room";
+const username =
+localStorage.getItem(
+"username"
+)
+||
+"Guest";
+
+/* JOIN ROOM */
+
+const joinRef =
+await addDoc(
+collection(db,"roomUsers"),
+{
+name:username,
+time:Date.now()
+}
+);
+
+/* REMOVE USER */
+
+window.addEventListener(
+"beforeunload",
+async()=>{
+
+await deleteDoc(
+doc(
+db,
+"roomUsers",
+joinRef.id
+)
+);
+
+});
+
+/* LOAD USERS */
+
+const seatBox =
+document.getElementById(
+"seatBox"
+);
+
+const userQuery =
+query(
+collection(db,"roomUsers"),
+orderBy("time")
+);
+
+onSnapshot(
+userQuery,
+(snapshot)=>{
+
+seatBox.innerHTML = "";
+
+let count = 0;
+
+snapshot.forEach((docx)=>{
+
+count++;
+
+let data =
+docx.data();
+
+seatBox.innerHTML += `
+
+<div class="seat">
+
+<img src="https://i.imgur.com/6VBx3io.png">
+
+<div class="username">
+${data.name}
+</div>
+
+<div class="status">
+🟢 Online
+</div>
+
+</div>
+
+`;
+
+});
+
+/* EMPTY */
+
+for(
+let i = count;
+i < 6;
+i++
+){
+
+seatBox.innerHTML += `
+
+<div class="empty-seat">
+
+<div class="plus">
++
+</div>
+
+<div class="join-text">
+Empty Seat
+</div>
+
+</div>
+
+`;
+
+}
+
+document.getElementById(
+"onlineText"
+).innerHTML =
+"🟢 " +
+count +
+" Members Online";
+
+});
 
 /* COMMENTS */
 
@@ -458,11 +528,6 @@ document.getElementById(
 if(msg.trim() == ""){
 return;
 }
-
-let username =
-localStorage.getItem(
-"username"
-) || "Guest";
 
 await addDoc(
 collection(db,"groupComments"),
@@ -527,7 +592,7 @@ document.getElementById(
 
 }
 
-/* LIVE VOICE */
+/* VOICE */
 
 let localStream;
 
@@ -535,20 +600,7 @@ let micEnabled = true;
 
 let speakerOn = true;
 
-let peerConnection;
-
-const servers = {
-
-iceServers:[
-{
-urls:
-"stun:stun.l.google.com:19302"
-}
-]
-
-};
-
-/* START VOICE */
+/* START MIC */
 
 async function startVoice(){
 
@@ -561,189 +613,6 @@ await navigator
 audio:true
 });
 
-peerConnection =
-new RTCPeerConnection(
-servers
-);
-
-/* ADD TRACK */
-
-localStream
-.getTracks()
-.forEach(track=>{
-
-peerConnection
-.addTrack(
-track,
-localStream
-);
-
-});
-
-/* RECEIVE AUDIO */
-
-peerConnection.ontrack =
-(event)=>{
-
-let audio =
-document.createElement(
-"audio"
-);
-
-audio.srcObject =
-event.streams[0];
-
-audio.autoplay = true;
-
-document.body.appendChild(
-audio
-);
-
-};
-
-/* ICE */
-
-peerConnection.onicecandidate =
-async(event)=>{
-
-if(event.candidate){
-
-await setDoc(
-doc(db,"voiceRooms",roomId),
-{
-candidate:
-JSON.stringify(
-event.candidate
-)
-},
-{
-merge:true
-}
-);
-
-}
-
-};
-
-/* OFFER */
-
-const roomDoc =
-await getDoc(
-doc(db,"voiceRooms",roomId)
-);
-
-if(!roomDoc.exists()){
-
-const offer =
-await peerConnection
-.createOffer();
-
-await peerConnection
-.setLocalDescription(
-offer
-);
-
-await setDoc(
-doc(db,"voiceRooms",roomId),
-{
-offer:{
-type:offer.type,
-sdp:offer.sdp
-}
-}
-);
-
-}else{
-
-const data =
-roomDoc.data();
-
-if(data.offer){
-
-await peerConnection
-.setRemoteDescription(
-new RTCSessionDescription(
-data.offer
-)
-);
-
-const answer =
-await peerConnection
-.createAnswer();
-
-await peerConnection
-.setLocalDescription(
-answer
-);
-
-await setDoc(
-doc(db,"voiceRooms",roomId),
-{
-offer:data.offer,
-answer:{
-type:answer.type,
-sdp:answer.sdp
-}
-}
-);
-
-}
-
-}
-
-/* LISTEN */
-
-onSnapshot(
-doc(db,"voiceRooms",roomId),
-async(snapshot)=>{
-
-const data =
-snapshot.data();
-
-if(
-data?.answer &&
-!peerConnection.currentRemoteDescription
-){
-
-await peerConnection
-.setRemoteDescription(
-new RTCSessionDescription(
-data.answer
-)
-);
-
-}
-
-if(data?.candidate){
-
-try{
-
-await peerConnection
-.addIceCandidate(
-new RTCIceCandidate(
-JSON.parse(
-data.candidate
-)
-)
-);
-
-}catch(e){
-
-console.log(e);
-
-}
-
-}
-
-});
-
-document.getElementById(
-"onlineText"
-).innerHTML =
-"🟢 Voice Connected";
-
-/* SPEAK DETECT */
-
 startSpeakingDetect();
 
 }catch(err){
@@ -751,8 +620,6 @@ startSpeakingDetect();
 alert(
 "Mic Permission Denied ❌"
 );
-
-console.log(err);
 
 }
 
@@ -812,18 +679,6 @@ function(){
 
 speakerOn =
 !speakerOn;
-
-let audios =
-document.querySelectorAll(
-"audio"
-);
-
-audios.forEach(audio=>{
-
-audio.muted =
-!speakerOn;
-
-});
 
 if(speakerOn){
 
