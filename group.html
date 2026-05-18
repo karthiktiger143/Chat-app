@@ -10,7 +10,7 @@ name="viewport"
 content="width=device-width, initial-scale=1.0"
 />
 
-<title>Ultimate Group Room</title>
+<title>Group Room</title>
 
 <style>
 
@@ -24,7 +24,6 @@ font-family:sans-serif;
 body{
 background:#000;
 color:white;
-overflow-x:hidden;
 padding-bottom:120px;
 }
 
@@ -81,7 +80,7 @@ font-size:14px;
 cursor:pointer;
 }
 
-/* LINK */
+/* ROOM DETAILS */
 
 .link-box{
 padding:90px 15px 0px;
@@ -92,21 +91,8 @@ background:#111;
 padding:15px;
 border-radius:15px;
 margin-top:10px;
-word-break:break-all;
 font-size:14px;
 border:1px solid #222;
-}
-
-.copy-btn{
-width:100%;
-padding:14px;
-margin-top:10px;
-background:#0084ff;
-border:none;
-border-radius:14px;
-color:white;
-font-size:16px;
-cursor:pointer;
 }
 
 /* VOICE */
@@ -155,8 +141,6 @@ background:#111;
 padding:20px;
 border-radius:20px;
 text-align:center;
-position:relative;
-transition:0.3s;
 }
 
 .seat img{
@@ -209,7 +193,6 @@ padding:12px;
 border-radius:15px;
 margin-top:10px;
 font-size:15px;
-word-wrap:break-word;
 }
 
 /* SEND */
@@ -301,7 +284,7 @@ Admin
 
 </div>
 
-<!-- ROOM LINK -->
+<!-- GROUP DETAILS -->
 
 <div class="link-box">
 
@@ -309,15 +292,8 @@ Admin
 class="room-link"
 id="roomLink"
 >
-Loading room link...
+Loading...
 </div>
-
-<button
-class="copy-btn"
-onclick="copyRoomLink()"
->
-📋 Copy Room Link
-</button>
 
 </div>
 
@@ -343,7 +319,7 @@ onclick="toggleSpeaker()"
 
 </div>
 
-<!-- SEATS -->
+<!-- USERS -->
 
 <div
 class="seats"
@@ -359,7 +335,7 @@ id="commentArea"
 >
 
 <div class="comment">
-🔥 Welcome To Live Voice Room
+🔥 Welcome To Tamil Voice Room
 </div>
 
 </div>
@@ -392,8 +368,6 @@ onclick="sendMsg()"
 
 <script type="module">
 
-/* FIREBASE */
-
 import {
 initializeApp
 }
@@ -407,11 +381,12 @@ query,
 orderBy,
 onSnapshot,
 deleteDoc,
-doc
+doc,
+getDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG */
+/* FIREBASE */
 
 const firebaseConfig = {
 
@@ -450,63 +425,68 @@ localStorage.getItem(
 ||
 "Guest";
 
-/* ROOM */
-
-const params =
-new URLSearchParams(
-window.location.search
-);
+/* ROOM ID */
 
 let roomId =
-params.get("room");
+localStorage.getItem(
+"roomId"
+);
 
-/* CREATE ROOM */
+/* GET GROUP */
 
-if(!roomId){
+const groupRef =
+doc(
+db,
+"groups",
+roomId
+);
 
-roomId =
-Math.random()
-.toString(36)
-.substring(2,8);
+const groupSnap =
+await getDoc(groupRef);
 
-window.location.href =
-window.location.pathname +
-"?room=" +
-roomId;
+let groupData = {};
+
+if(groupSnap.exists()){
+
+groupData =
+groupSnap.data();
 
 }
 
-/* ROOM LINK */
+/* GROUP DETAILS */
 
-const roomLink =
-window.location.origin +
-window.location.pathname +
-"?room=" +
-roomId;
+let groupName =
+groupData.groupName
+||
+"Tamil Voice Room";
 
-document.getElementById(
-"roomLink"
-).innerHTML =
-roomLink;
+let groupType =
+groupData.groupType
+||
+"Public";
+
+let ownerName =
+groupData.ownerName
+||
+"Guest";
+
+/* SHOW DETAILS */
 
 document.getElementById(
 "roomName"
 ).innerHTML =
-"🔥 Room : " + roomId;
+"🔥 " + groupName;
 
-/* COPY LINK */
-
-window.copyRoomLink =
-function(){
-
-navigator.clipboard
-.writeText(roomLink);
-
-alert(
-"📋 Room Link Copied"
-);
-
-}
+document.getElementById(
+"roomLink"
+).innerHTML =
+"👑 Owner : "
++
+ownerName
++
+" | 🔒 "
++
+groupType;
 
 /* JOIN ROOM */
 
@@ -703,15 +683,13 @@ document.getElementById(
 
 }
 
-/* VOICE */
+/* MIC */
 
 let localStream;
 
 let micEnabled = true;
 
 let speakerOn = true;
-
-/* START MIC */
 
 async function startVoice(){
 
@@ -724,12 +702,10 @@ await navigator
 audio:true
 });
 
-startSpeakingDetect();
-
 }catch(err){
 
 alert(
-"Mic Permission Denied ❌"
+"Mic Permission Denied"
 );
 
 }
@@ -738,7 +714,7 @@ alert(
 
 startVoice();
 
-/* MIC */
+/* MIC TOGGLE */
 
 window.toggleMic =
 function(){
@@ -762,22 +738,12 @@ document.getElementById(
 ).innerHTML =
 "🎙️";
 
-document.getElementById(
-"micBtn"
-).style.background =
-"#0084ff";
-
 }else{
 
 document.getElementById(
 "micBtn"
 ).innerHTML =
 "🔇";
-
-document.getElementById(
-"micBtn"
-).style.background =
-"red";
 
 }
 
@@ -798,11 +764,6 @@ document.getElementById(
 ).innerHTML =
 "🔊";
 
-document.getElementById(
-"speakerBtn"
-).style.background =
-"#00aa55";
-
 }else{
 
 document.getElementById(
@@ -810,86 +771,7 @@ document.getElementById(
 ).innerHTML =
 "🔇";
 
-document.getElementById(
-"speakerBtn"
-).style.background =
-"red";
-
 }
-
-}
-
-/* SPEAK DETECT */
-
-function startSpeakingDetect(){
-
-const audioContext =
-new AudioContext();
-
-const analyser =
-audioContext.createAnalyser();
-
-const microphone =
-audioContext
-.createMediaStreamSource(
-localStream
-);
-
-microphone.connect(
-analyser
-);
-
-analyser.fftSize = 256;
-
-const dataArray =
-new Uint8Array(
-analyser.frequencyBinCount
-);
-
-function detectSpeaking(){
-
-analyser.getByteFrequencyData(
-dataArray
-);
-
-let volume = 0;
-
-for(
-let i = 0;
-i < dataArray.length;
-i++
-){
-
-volume += dataArray[i];
-
-}
-
-volume =
-volume / dataArray.length;
-
-if(volume > 20){
-
-document.getElementById(
-"micBtn"
-).style.boxShadow =
-"0 0 30px #00ff66";
-
-}else{
-
-document.getElementById(
-"micBtn"
-).style.boxShadow =
-"none";
-
-}
-
-requestAnimationFrame(
-detectSpeaking
-);
-
-}
-
-detectSpeaking();
 
 }
 
