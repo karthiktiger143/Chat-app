@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+/>
+
+<title>Groups</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#000;
+color:white;
+padding-bottom:100px;
+}
+
+/* TOPBAR */
+
+.topbar{
+width:100%;
+padding:15px;
+background:#111;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:999;
+border-bottom:1px solid #222;
+}
+
+.logo{
+font-size:24px;
+font-weight:bold;
+}
+
+.create-btn{
+background:#0084ff;
+border:none;
+padding:12px 16px;
+border-radius:14px;
+color:white;
+font-size:15px;
+cursor:pointer;
+}
+
+/* SEARCH */
+
+.search-box{
+padding:15px;
+}
+
+.search-box input{
+width:100%;
+padding:16px;
+border:none;
+border-radius:18px;
+background:#111;
+color:white;
+font-size:16px;
+outline:none;
+}
+
+/* CATEGORY */
+
+.categories{
+display:flex;
+overflow:auto;
+gap:10px;
+padding:0 15px 15px;
+}
+
+.categories::-webkit-scrollbar{
+display:none;
+}
+
+.category{
+padding:12px 18px;
+background:#111;
+border-radius:30px;
+white-space:nowrap;
+font-size:14px;
+cursor:pointer;
+}
+
+.active-category{
+background:#0084ff;
+}
+
+/* BANNER */
+
+.banner{
+margin:15px;
+padding:18px;
+border-radius:20px;
+background:linear-gradient(45deg,#0084ff,#00aa55);
+}
+
+.banner-title{
+font-size:22px;
+font-weight:bold;
+}
+
+.banner-sub{
+margin-top:8px;
+font-size:14px;
+}
+
+/* SECTION */
+
+.section{
+padding:0 15px;
+margin-top:20px;
+}
+
+.section-title{
+font-size:22px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+/* GROUP BOX */
+
+.group-box{
+background:#111;
+padding:18px;
+border-radius:22px;
+margin-top:15px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.group-box:hover{
+background:#1a1a1a;
+}
+
+.group-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.group-name{
+font-size:20px;
+font-weight:bold;
+}
+
+.live-badge{
+background:#00aa55;
+padding:6px 12px;
+border-radius:20px;
+font-size:13px;
+}
+
+.group-desc{
+margin-top:10px;
+font-size:14px;
+color:#aaa;
+}
+
+.group-bottom{
+margin-top:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.online-count{
+font-size:14px;
+color:#00ff66;
+}
+
+.room-type{
+padding:6px 12px;
+border-radius:12px;
+background:#222;
+font-size:13px;
+}
+
+.host-name{
+margin-top:12px;
+font-size:13px;
+color:#888;
+}
+
+/* POPUP */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:99999;
+}
+
+.popup-box{
+width:90%;
+background:#111;
+padding:25px;
+border-radius:25px;
+}
+
+.popup-title{
+font-size:24px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.popup-box input,
+.popup-box textarea,
+.popup-box select{
+width:100%;
+padding:16px;
+margin-top:15px;
+border:none;
+border-radius:15px;
+background:#222;
+color:white;
+font-size:16px;
+outline:none;
+}
+
+.popup-btn{
+width:100%;
+padding:16px;
+margin-top:20px;
+border:none;
+border-radius:16px;
+background:#0084ff;
+color:white;
+font-size:17px;
+cursor:pointer;
+}
+
+.close-btn{
+background:red;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+width:100%;
+height:75px;
+background:#111;
+position:fixed;
+bottom:0;
+left:0;
+display:flex;
+justify-content:space-around;
+align-items:center;
+border-top:1px solid #222;
+}
+
+.nav-item{
+text-align:center;
+font-size:13px;
+}
+
+.nav-icon{
+font-size:24px;
+display:block;
+margin-bottom:4px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+
+<div class="logo">
+🔥 Namma Groups
+</div>
+
+<button
+class="create-btn"
+onclick="openPopup()"
+>
++ Create
+</button>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="search-box">
+
+<input
+id="searchInput"
+type="text"
+placeholder="Search groups..."
+onkeyup="filterGroups()"
+>
+
+</div>
+
+<!-- CATEGORY -->
+
+<div class="categories">
+
+<div class="category active-category">
+All
+</div>
+
+<div class="category">
+Tamil
+</div>
+
+<div class="category">
+Music
+</div>
+
+<div class="category">
+Gaming
+</div>
+
+<div class="category">
+Fun
+</div>
+
+<div class="category">
+Dating
+</div>
+
+</div>
+
+<!-- BANNER -->
+
+<div class="banner">
+
+<div class="banner-title">
+🎤 Voice Rooms Live
+</div>
+
+<div class="banner-sub">
+Join trending Tamil live rooms now 🔥
+</div>
+
+</div>
+
+<!-- GROUPS -->
+
+<div class="section">
+
+<div class="section-title">
+👥 Live Groups
+</div>
+
+<div
+id="groupsContainer"
+>
+</div>
+
+</div>
+
+<!-- CREATE GROUP POPUP -->
+
+<div
+class="popup"
+id="popup"
+>
+
+<div class="popup-box">
+
+<div class="popup-title">
+🔥 Create Group
+</div>
+
+<input
+id="groupName"
+type="text"
+placeholder="Group Name"
+>
+
+<textarea
+id="groupDesc"
+placeholder="Group Description"
+></textarea>
+
+<select id="groupType">
+
+<option>
+Public
+</option>
+
+<option>
+Private
+</option>
+
+</select>
+
+<select id="seatMode">
+
+<option>
+Manual Accept
+</option>
+
+<option>
+Auto Accept
+</option>
+
+</select>
+
+<button
+class="popup-btn"
+onclick="createGroup()"
+>
+Create Group
+</button>
+
+<button
+class="popup-btn close-btn"
+onclick="closePopup()"
+>
+Close
+</button>
+
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+
+<div class="bottom-nav">
+
+<div class="nav-item">
+<span class="nav-icon">🏠</span>
+Home
+</div>
+
+<div class="nav-item">
+<span class="nav-icon">👥</span>
+Groups
+</div>
+
+<div class="nav-item">
+<span class="nav-icon">🔔</span>
+Alerts
+</div>
+
+<div class="nav-item">
+<span class="nav-icon">⚙️</span>
+Settings
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+onSnapshot,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* FIREBASE */
+
+const firebaseConfig = {
+
+apiKey:
+"YOUR_API_KEY",
+
+authDomain:
+"YOUR_AUTH_DOMAIN",
+
+projectId:
+"YOUR_PROJECT_ID",
+
+storageBucket:
+"YOUR_STORAGE_BUCKET",
+
+messagingSenderId:
+"YOUR_SENDER_ID",
+
+appId:
+"YOUR_APP_ID"
+
+};
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+
+/* POPUP */
+
+window.openPopup =
+function(){
+
+document.getElementById(
+"popup"
+).style.display =
+"flex";
+
+}
+
+window.closePopup =
+function(){
+
+document.getElementById(
+"popup"
+).style.display =
+"none";
+
+}
+
+/* CREATE GROUP */
+
+window.createGroup =
+async function(){
+
+let name =
+document.getElementById(
+"groupName"
+).value;
+
+let desc =
+document.getElementById(
+"groupDesc"
+).value;
+
+let type =
+document.getElementById(
+"groupType"
+).value;
+
+let seatMode =
+document.getElementById(
+"seatMode"
+).value;
+
+if(name.trim() == ""){
+alert("Enter Group Name");
+return;
+}
+
+await addDoc(
+collection(db,"groups"),
+{
+name:name,
+desc:desc,
+type:type,
+seatMode:seatMode,
+owner:
+localStorage.getItem(
+"username"
+) || "Guest",
+created:Date.now(),
+online:1
+}
+);
+
+alert(
+"Group Created 🔥"
+);
+
+closePopup();
+
+}
+
+/* LOAD GROUPS */
+
+const q =
+query(
+collection(db,"groups"),
+orderBy("created")
+);
+
+onSnapshot(q,(snapshot)=>{
+
+let html = "";
+
+snapshot.forEach((doc)=>{
+
+let data =
+doc.data();
+
+html += `
+
+<div
+class="group-box"
+data-name="${data.name}"
+onclick="openRoom('${data.name}')"
+>
+
+<div class="group-top">
+
+<div class="group-name">
+🔥 ${data.name}
+</div>
+
+<div class="live-badge">
+LIVE
+</div>
+
+</div>
+
+<div class="group-desc">
+${data.desc || "Tamil Live Room"}
+</div>
+
+<div class="host-name">
+👑 Host : ${data.owner}
+</div>
+
+<div class="group-bottom">
+
+<div class="online-count">
+🟢 ${data.online} Online
+</div>
+
+<div class="room-type">
+${data.type}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+document.getElementById(
+"groupsContainer"
+).innerHTML =
+html;
+
+});
+
+/* SEARCH */
+
+window.filterGroups =
+function(){
+
+let input =
+document.getElementById(
+"searchInput"
+).value.toLowerCase();
+
+let groups =
+document.querySelectorAll(
+".group-box"
+);
+
+groups.forEach((box)=>{
+
+let name =
+box.getAttribute(
+"data-name"
+).toLowerCase();
+
+if(name.includes(input)){
+
+box.style.display =
+"block";
+
+}else{
+
+box.style.display =
+"none";
+
+}
+
+});
+
+}
+
+/* OPEN ROOM */
+
+window.openRoom =
+function(name){
+
+localStorage.setItem(
+"roomName",
+name
+);
+
+window.location.href =
+"group.html";
+
+}
+
+</script>
+
+</body>
+
+</html>
