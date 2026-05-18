@@ -27,8 +27,6 @@ color:white;
 padding-bottom:100px;
 }
 
-/* TOPBAR */
-
 .topbar{
 width:100%;
 padding:15px;
@@ -57,8 +55,6 @@ font-size:15px;
 cursor:pointer;
 }
 
-/* SEARCH */
-
 .search-box{
 padding:15px;
 }
@@ -73,8 +69,6 @@ color:white;
 font-size:16px;
 outline:none;
 }
-
-/* CATEGORY */
 
 .categories{
 display:flex;
@@ -100,8 +94,6 @@ cursor:pointer;
 background:#0084ff;
 }
 
-/* BANNER */
-
 .banner{
 margin:15px;
 padding:18px;
@@ -119,8 +111,6 @@ margin-top:8px;
 font-size:14px;
 }
 
-/* SECTION */
-
 .section{
 padding:0 15px;
 margin-top:20px;
@@ -131,8 +121,6 @@ font-size:22px;
 font-weight:bold;
 margin-bottom:15px;
 }
-
-/* GROUP BOX */
 
 .group-box{
 background:#111;
@@ -204,7 +192,17 @@ font-size:13px;
 color:#ccc;
 }
 
-/* POPUP */
+.join-btn{
+width:100%;
+margin-top:15px;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#0084ff;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
 
 .popup{
 position:fixed;
@@ -269,8 +267,6 @@ cursor:pointer;
 background:red;
 }
 
-/* BOTTOM NAV */
-
 .bottom-nav{
 width:100%;
 height:75px;
@@ -301,8 +297,6 @@ margin-bottom:4px;
 
 <body>
 
-<!-- TOPBAR -->
-
 <div class="topbar">
 
 <div class="logo">
@@ -318,8 +312,6 @@ onclick="openPopup()"
 
 </div>
 
-<!-- SEARCH -->
-
 <div class="search-box">
 
 <input
@@ -330,8 +322,6 @@ onkeyup="filterGroups()"
 >
 
 </div>
-
-<!-- CATEGORY -->
 
 <div class="categories">
 
@@ -361,8 +351,6 @@ Dating
 
 </div>
 
-<!-- BANNER -->
-
 <div class="banner">
 
 <div class="banner-title">
@@ -375,27 +363,17 @@ Join trending Tamil live rooms now 🔥
 
 </div>
 
-<!-- GROUPS -->
-
 <div class="section">
 
 <div class="section-title">
 👥 Live Groups
 </div>
 
-<div
-id="groupsContainer"
->
-</div>
+<div id="groupsContainer"></div>
 
 </div>
 
-<!-- CREATE GROUP POPUP -->
-
-<div
-class="popup"
-id="popup"
->
+<div class="popup" id="popup">
 
 <div class="popup-box">
 
@@ -415,27 +393,13 @@ placeholder="Group Description"
 ></textarea>
 
 <select id="groupType">
-
-<option>
-Public
-</option>
-
-<option>
-Private
-</option>
-
+<option>Public</option>
+<option>Private</option>
 </select>
 
 <select id="seatMode">
-
-<option>
-Manual Accept
-</option>
-
-<option>
-Auto Accept
-</option>
-
+<option>Manual Accept</option>
+<option>Auto Accept</option>
 </select>
 
 <button
@@ -455,8 +419,6 @@ Close
 </div>
 
 </div>
-
-<!-- BOTTOM NAV -->
 
 <div class="bottom-nav">
 
@@ -497,8 +459,6 @@ orderBy
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* FIREBASE */
-
 const firebaseConfig = {
 
 apiKey:
@@ -521,58 +481,26 @@ appId:
 
 };
 
-const app =
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-const db =
-getFirestore(app);
-
-/* POPUP */
-
-window.openPopup =
-function(){
-
-document.getElementById(
-"popup"
-).style.display =
-"flex";
-
+window.openPopup = function(){
+document.getElementById("popup").style.display = "flex";
 }
 
-window.closePopup =
-function(){
-
-document.getElementById(
-"popup"
-).style.display =
-"none";
-
+window.closePopup = function(){
+document.getElementById("popup").style.display = "none";
 }
 
-/* CREATE GROUP */
+window.createGroup = async function(){
 
-window.createGroup =
-async function(){
+let name = document.getElementById("groupName").value;
+let desc = document.getElementById("groupDesc").value;
+let type = document.getElementById("groupType").value;
+let seatMode = document.getElementById("seatMode").value;
 
-let name =
-document.getElementById(
-"groupName"
-).value;
-
-let desc =
-document.getElementById(
-"groupDesc"
-).value;
-
-let type =
-document.getElementById(
-"groupType"
-).value;
-
-let seatMode =
-document.getElementById(
-"seatMode"
-).value;
+let username =
+localStorage.getItem("username") || "Guest";
 
 if(name.trim() == ""){
 alert("Enter Group Name");
@@ -582,68 +510,77 @@ return;
 await addDoc(
 collection(db,"groups"),
 {
-
 groupName:name,
-
 groupDesc:desc,
-
 groupType:type,
-
 seatMode:seatMode,
-
-ownerName:
-localStorage.getItem(
-"username"
-)
-||
-"Guest",
-
+ownerName:username,
 onlineUsers:1,
-
 totalUsers:1,
-
 created:Date.now()
-
 }
 );
 
-alert(
-"🔥 Group Created"
-);
+alert("🔥 Group Created Successfully");
 
 closePopup();
 
-}
+document.getElementById("groupName").value = "";
+document.getElementById("groupDesc").value = "";
 
-/* LOAD GROUPS */
+}
 
 const q =
 query(
 collection(db,"groups"),
-orderBy("created")
+orderBy("created","desc")
 );
 
 onSnapshot(q,(snapshot)=>{
 
 let html = "";
 
+let totalGroups = snapshot.size;
+
+document.querySelector(
+".section-title"
+).innerHTML =
+`👥 ${totalGroups} Groups Online`;
+
 snapshot.forEach((doc)=>{
 
-let data =
-doc.data();
+let data = doc.data();
+
+let groupName =
+data.groupName || "Unknown Group";
+
+let groupDesc =
+data.groupDesc || "Tamil Live Room";
+
+let ownerName =
+data.ownerName || "Guest";
+
+let onlineUsers =
+data.onlineUsers || 1;
+
+let totalUsers =
+data.totalUsers || 1;
+
+let groupType =
+data.groupType || "Public";
 
 html += `
 
 <div
 class="group-box"
-data-name="${data.groupName}"
-onclick="openRoom('${data.groupName}')"
+data-name="${groupName}"
+onclick="openRoom('${doc.id}')"
 >
 
 <div class="group-top">
 
 <div class="group-name">
-🔥 ${data.groupName}
+🔥 ${groupName}
 </div>
 
 <div class="live-badge">
@@ -653,28 +590,32 @@ LIVE
 </div>
 
 <div class="group-desc">
-${data.groupDesc || "Tamil Live Room"}
+${groupDesc}
 </div>
 
 <div class="host-name">
-👑 Owner : ${data.ownerName}
+👑 Created By : ${ownerName}
 </div>
 
 <div class="group-bottom">
 
 <div class="online-count">
-🟢 ${data.onlineUsers} Online
+🟢 ${onlineUsers} Online
 </div>
 
 <div class="room-type">
-🔒 ${data.groupType}
+${groupType}
 </div>
 
 </div>
 
 <div class="member-count">
-👥 ${data.totalUsers} Members
+👥 ${totalUsers} Members
 </div>
+
+<button class="join-btn">
+JOIN ROOM
+</button>
 
 </div>
 
@@ -684,15 +625,11 @@ ${data.groupDesc || "Tamil Live Room"}
 
 document.getElementById(
 "groupsContainer"
-).innerHTML =
-html;
+).innerHTML = html;
 
 });
 
-/* SEARCH */
-
-window.filterGroups =
-function(){
+window.filterGroups = function(){
 
 let input =
 document.getElementById(
@@ -712,29 +649,20 @@ box.getAttribute(
 ).toLowerCase();
 
 if(name.includes(input)){
-
-box.style.display =
-"block";
-
+box.style.display = "block";
 }else{
-
-box.style.display =
-"none";
-
+box.style.display = "none";
 }
 
 });
 
 }
 
-/* OPEN ROOM */
-
-window.openRoom =
-function(name){
+window.openRoom = function(roomId){
 
 localStorage.setItem(
-"roomName",
-name
+"roomId",
+roomId
 );
 
 window.location.href =
