@@ -4,7 +4,10 @@
 
 <title>User Profile</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
 
 <style>
 
@@ -18,6 +21,8 @@ font-family:sans-serif;
 body{
 background:#000;
 color:white;
+padding-bottom:100px;
+overflow-x:hidden;
 }
 
 /* TOPBAR */
@@ -28,14 +33,26 @@ padding:15px;
 background:#111;
 display:flex;
 align-items:center;
-gap:15px;
+justify-content:space-between;
 position:fixed;
 top:0;
 left:0;
 border-bottom:1px solid #222;
+z-index:999;
+}
+
+.top-left{
+display:flex;
+align-items:center;
+gap:15px;
 }
 
 .back{
+font-size:24px;
+cursor:pointer;
+}
+
+.menu{
 font-size:24px;
 cursor:pointer;
 }
@@ -73,6 +90,30 @@ color:#aaa;
 line-height:25px;
 }
 
+/* STATS */
+
+.stats{
+display:flex;
+justify-content:space-around;
+margin-top:25px;
+padding:0 20px;
+}
+
+.stat{
+text-align:center;
+}
+
+.stat-num{
+font-size:24px;
+font-weight:bold;
+}
+
+.stat-text{
+margin-top:5px;
+color:#888;
+font-size:14px;
+}
+
 /* BUTTONS */
 
 .btns{
@@ -97,6 +138,14 @@ background:#0084ff;
 
 .req-btn{
 background:#00aa55;
+}
+
+.follow-btn{
+background:#ff00aa;
+}
+
+.share-btn{
+background:#444;
 }
 
 .report-btn{
@@ -130,6 +179,63 @@ font-size:18px;
 margin-top:5px;
 }
 
+/* RECENT ACTIVITY */
+
+.activity-box{
+padding:20px;
+}
+
+.activity{
+background:#111;
+padding:15px;
+border-radius:15px;
+margin-top:12px;
+}
+
+.activity-title{
+font-size:17px;
+font-weight:bold;
+}
+
+.activity-desc{
+margin-top:8px;
+color:#aaa;
+font-size:14px;
+line-height:22px;
+}
+
+/* MENU PANEL */
+
+#menuPanel{
+display:none;
+position:fixed;
+top:0;
+right:0;
+width:80%;
+height:100%;
+background:#111;
+z-index:99999;
+padding:20px;
+overflow:auto;
+}
+
+.menu-btn{
+width:100%;
+padding:16px;
+margin-top:15px;
+border:none;
+border-radius:15px;
+background:#222;
+color:white;
+font-size:16px;
+cursor:pointer;
+text-align:left;
+}
+
+.close-menu{
+background:red;
+}
+
 </style>
 
 </head>
@@ -140,14 +246,27 @@ margin-top:5px;
 
 <div class="topbar">
 
+<div class="top-left">
+
 <div
 class="back"
-onclick="window.location.href='home.html'"
+onclick="goBack()"
 >
 ⬅
 </div>
 
-<h2>Profile</h2>
+<h2>
+Profile
+</h2>
+
+</div>
+
+<div
+class="menu"
+onclick="openMenu()"
+>
+⋮
+</div>
 
 </div>
 
@@ -155,18 +274,66 @@ onclick="window.location.href='home.html'"
 
 <div class="profile-box">
 
-<img src="https://i.imgur.com/6VBx3io.png">
+<img
+src="https://i.imgur.com/6VBx3io.png"
+id="profileImage"
+>
 
-<div class="username" id="username">
+<div
+class="username"
+id="username"
+>
 Karthi
 </div>
 
 <div class="status">
-Online
+🟢 Online
 </div>
 
 <div class="bio">
 Love chatting 💬 | Music 🎵 | Gaming 🎮
+</div>
+
+</div>
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-num">
+1.2K
+</div>
+
+<div class="stat-text">
+Followers
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-num">
+450
+</div>
+
+<div class="stat-text">
+Following
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-num">
+89
+</div>
+
+<div class="stat-text">
+Rooms
+</div>
+
 </div>
 
 </div>
@@ -187,6 +354,20 @@ class="req-btn"
 onclick="sendRequest()"
 >
 ➕ Send Request
+</button>
+
+<button
+class="follow-btn"
+onclick="followUser()"
+>
+❤️ Follow User
+</button>
+
+<button
+class="share-btn"
+onclick="shareProfile()"
+>
+📤 Share Profile
 </button>
 
 <button
@@ -227,18 +408,6 @@ id="userid"
 <div class="info">
 
 <div class="info-title">
-Followers
-</div>
-
-<div class="info-value">
-1.2K
-</div>
-
-</div>
-
-<div class="info">
-
-<div class="info-title">
 Joined
 </div>
 
@@ -248,6 +417,109 @@ Joined
 
 </div>
 
+<div class="info">
+
+<div class="info-title">
+Country
+</div>
+
+<div class="info-value">
+India 🇮🇳
+</div>
+
+</div>
+
+</div>
+
+<!-- ACTIVITY -->
+
+<div class="activity-box">
+
+<h2>
+🔥 Recent Activity
+</h2>
+
+<div class="activity">
+
+<div class="activity-title">
+🎤 Joined Tamil Room
+</div>
+
+<div class="activity-desc">
+Started speaking in voice room.
+</div>
+
+</div>
+
+<div class="activity">
+
+<div class="activity-title">
+🎵 Music Discussion
+</div>
+
+<div class="activity-desc">
+Hosted music room with friends.
+</div>
+
+</div>
+
+<div class="activity">
+
+<div class="activity-title">
+👥 Followed New Users
+</div>
+
+<div class="activity-desc">
+Connected with new people.
+</div>
+
+</div>
+
+</div>
+
+<!-- MENU PANEL -->
+
+<div id="menuPanel">
+
+<h2>
+⚙️ Profile Menu
+</h2>
+
+<button
+class="menu-btn"
+onclick="editProfile()"
+>
+✏️ Edit Profile
+</button>
+
+<button
+class="menu-btn"
+onclick="changePhoto()"
+>
+📸 Change Photo
+</button>
+
+<button
+class="menu-btn"
+onclick="copyProfile()"
+>
+🔗 Copy Profile Link
+</button>
+
+<button
+class="menu-btn"
+onclick="logoutUser()"
+>
+🚪 Logout
+</button>
+
+<button
+class="menu-btn close-menu"
+onclick="closeMenu()"
+>
+❌ Close
+</button>
+
 </div>
 
 <script>
@@ -255,7 +527,15 @@ Joined
 /* USER */
 
 const user =
-localStorage.getItem("username");
+localStorage.getItem(
+"profileUser"
+)
+||
+localStorage.getItem(
+"username"
+)
+||
+"Guest";
 
 document.getElementById(
 "username"
@@ -267,7 +547,15 @@ document.getElementById(
 ).innerHTML =
 "@" + user;
 
-/* BUTTONS */
+/* BACK */
+
+function goBack(){
+
+window.history.back();
+
+}
+
+/* CHAT */
 
 function openChat(){
 
@@ -275,6 +563,8 @@ window.location.href =
 "chat.html";
 
 }
+
+/* REQUEST */
 
 function sendRequest(){
 
@@ -284,6 +574,32 @@ alert(
 
 }
 
+/* FOLLOW */
+
+function followUser(){
+
+alert(
+"You followed " + user + " ❤️"
+);
+
+}
+
+/* SHARE */
+
+function shareProfile(){
+
+navigator.clipboard.writeText(
+window.location.href
+);
+
+alert(
+"Profile Link Copied 🔥"
+);
+
+}
+
+/* REPORT */
+
 function reportUser(){
 
 alert(
@@ -292,10 +608,70 @@ alert(
 
 }
 
+/* BLOCK */
+
 function blockUser(){
 
 alert(
 "User Blocked 🚫"
+);
+
+}
+
+/* MENU */
+
+function openMenu(){
+
+document.getElementById(
+"menuPanel"
+).style.display =
+"block";
+
+}
+
+function closeMenu(){
+
+document.getElementById(
+"menuPanel"
+).style.display =
+"none";
+
+}
+
+/* MENU ACTIONS */
+
+function editProfile(){
+
+alert(
+"Edit Profile Coming Soon ✏️"
+);
+
+}
+
+function changePhoto(){
+
+alert(
+"Photo Upload Coming Soon 📸"
+);
+
+}
+
+function copyProfile(){
+
+navigator.clipboard.writeText(
+window.location.href
+);
+
+alert(
+"Profile Link Copied 🔗"
+);
+
+}
+
+function logoutUser(){
+
+alert(
+"Logged Out 🚪"
 );
 
 }
