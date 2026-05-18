@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Admin Panel</title><style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#000;
+color:white;
+padding-bottom:100px;
+}
+
+.topbar{
+width:100%;
+padding:15px;
+background:#111;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:fixed;
+top:0;
+left:0;
+border-bottom:1px solid #222;
+z-index:999;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.back{
+font-size:24px;
+cursor:pointer;
+}
+
+.title{
+font-size:22px;
+font-weight:bold;
+}
+
+.admin-badge{
+background:#0084ff;
+padding:8px 14px;
+border-radius:20px;
+font-size:14px;
+}
+
+.container{
+padding:90px 15px 20px;
+}
+
+.card{
+background:#111;
+padding:18px;
+border-radius:18px;
+margin-top:15px;
+border:1px solid #222;
+}
+
+.card h3{
+margin-bottom:15px;
+font-size:18px;
+}
+
+.btn{
+width:100%;
+padding:15px;
+border:none;
+border-radius:14px;
+margin-top:10px;
+font-size:16px;
+font-weight:bold;
+color:white;
+cursor:pointer;
+}
+
+.red{background:red;}
+.green{background:#00aa55;}
+.blue{background:#0084ff;}
+.orange{background:#ff8800;}
+.purple{background:#8a2be2;}
+.gray{background:#444;}
+
+.input{
+width:100%;
+padding:15px;
+border:none;
+border-radius:14px;
+background:#222;
+color:white;
+margin-top:10px;
+font-size:15px;
+outline:none;
+}
+
+.user{
+background:#1a1a1a;
+padding:14px;
+border-radius:14px;
+margin-top:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.user-name{
+font-size:16px;
+font-weight:bold;
+}
+
+.user-status{
+font-size:13px;
+color:#00ff66;
+margin-top:5px;
+}
+
+.actions{
+display:flex;
+gap:8px;
+}
+
+.action-btn{
+padding:10px 12px;
+border:none;
+border-radius:10px;
+color:white;
+cursor:pointer;
+font-size:14px;
+}
+
+.logs{
+max-height:250px;
+overflow:auto;
+}
+
+.log{
+background:#1a1a1a;
+padding:12px;
+border-radius:12px;
+margin-top:10px;
+font-size:14px;
+}
+
+.switch{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:15px;
+background:#1a1a1a;
+padding:15px;
+border-radius:14px;
+}
+
+select{
+background:#222;
+color:white;
+border:none;
+padding:12px;
+border-radius:12px;
+outline:none;
+}
+
+</style></head>
+<body><div class="topbar"><div class="left">
+<div class="back" onclick="history.back()">⬅</div>
+<div class="title">Admin Panel</div>
+</div><div class="admin-badge">
+👑 ADMIN
+</div></div><div class="container"><!-- ROOM CONTROL --><div class="card">
+<h3>🔒 Room Control</h3><button class="btn blue" onclick="lockRoom()">
+🔒 Lock Room
+</button><button class="btn green" onclick="unlockRoom()">
+🔓 Unlock Room
+</button><button class="btn orange" onclick="clearChat()">
+🧹 Clear Comments
+</button><button class="btn purple" onclick="pinMessage()">
+📌 Pin Message
+</button></div><!-- ANNOUNCEMENT --><div class="card">
+<h3>📢 Announcement</h3><input class="input" id="announceInput" placeholder="Type announcement..."
+
+> 
+
+<button class="btn blue" onclick="sendAnnouncement()">
+📢 Send Announcement
+</button></div><!-- USER MANAGEMENT --><div class="card">
+<h3>👥 User Management</h3><div id="userList"><div class="user">
+<div>
+<div class="user-name">Karthi</div>
+<div class="user-status">🟢 Online</div>
+</div><div class="actions">
+<button class="action-btn orange" onclick="muteUser('Karthi')">🔇</button>
+<button class="action-btn red" onclick="kickUser('Karthi')">🚫</button>
+</div>
+</div><div class="user">
+<div>
+<div class="user-name">Arun</div>
+<div class="user-status">🟢 Online</div>
+</div><div class="actions">
+<button class="action-btn orange" onclick="muteUser('Arun')">🔇</button>
+<button class="action-btn red" onclick="kickUser('Arun')">🚫</button>
+</div>
+</div></div></div><!-- SEAT REQUEST --><div class="card">
+<h3>🎤 Seat Requests</h3><div class="user">
+<div>
+<div class="user-name">Hari Wants Seat</div>
+<div class="user-status">Raise Hand ✋</div>
+</div><div class="actions">
+<button class="action-btn green" onclick="approveSeat('Hari')">✅</button>
+<button class="action-btn red" onclick="rejectSeat('Hari')">❌</button>
+</div>
+</div></div><!-- SETTINGS --><div class="card">
+<h3>⚙ Room Settings</h3><div class="switch">
+<span>🎁 Gifts</span>
+<select>
+<option>ON</option>
+<option>OFF</option>
+</select>
+</div><div class="switch">
+<span>💬 Comments</span>
+<select>
+<option>ON</option>
+<option>OFF</option>
+</select>
+</div><div class="switch">
+<span>🎤 Voice Chat</span>
+<select>
+<option>ON</option>
+<option>OFF</option>
+</select>
+</div><div class="switch">
+<span>🔞 Bad Word Filter</span>
+<select>
+<option>ON</option>
+<option>OFF</option>
+</select>
+</div></div><!-- ANALYTICS --><div class="card">
+<h3>📊 Room Analytics</h3><div class="log">👥 Total Users : 28</div>
+<div class="log">🎤 Active Speakers : 4</div>
+<div class="log">💬 Messages Today : 540</div>
+<div class="log">🎁 Gifts Sent : 93</div></div><!-- ADMIN LOGS --><div class="card">
+<h3>🧾 Admin Logs</h3><div class="logs">
+<div class="log">🚫 Arun kicked by Admin</div>
+<div class="log">🔇 Hari muted for 10 minutes</div>
+<div class="log">📌 Comment pinned</div>
+<div class="log">🔒 Room locked</div>
+</div></div></div><script>
+
+function lockRoom(){
+alert("🔒 Room Locked");
+}
+
+function unlockRoom(){
+alert("🔓 Room Unlocked");
+}
+
+function clearChat(){
+alert("🧹 All Comments Cleared");
+}
+
+function pinMessage(){
+alert("📌 Message Pinned");
+}
+
+function sendAnnouncement(){
+
+let msg =
+document.getElementById(
+"announceInput"
+).value;
+
+if(msg.trim()==""){
+return;
+}
+
+alert(
+"📢 Announcement Sent : " + msg
+);
+
+}
+
+function muteUser(name){
+alert("🔇 " + name + " muted");
+}
+
+function kickUser(name){
+alert("🚫 " + name + " kicked");
+}
+
+function approveSeat(name){
+alert("✅ " + name + " approved");
+}
+
+function rejectSeat(name){
+alert("❌ " + name + " rejected");
+}
+
+</script></body>
+</html>
