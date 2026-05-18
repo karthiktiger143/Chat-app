@@ -241,7 +241,7 @@ id="roomName"
 </div>
 
 <div class="room-online">
-🟢 8 Members Online
+🟢 Voice Room Live
 </div>
 
 </div>
@@ -332,7 +332,7 @@ id="commentArea"
 >
 
 <div class="comment">
-🔥 Welcome To Room
+🔥 Welcome To Live Voice Room
 </div>
 
 </div>
@@ -409,13 +409,26 @@ document.getElementById(
 
 }
 
-/* REAL VOICE SYSTEM */
+/* LIVE VOICE SYSTEM */
 
 let localStream;
 let micEnabled = true;
 let speakerOn = true;
 
-/* START MIC */
+let peerConnection;
+
+const servers = {
+
+iceServers:[
+{
+urls:
+"stun:stun.l.google.com:19302"
+}
+]
+
+};
+
+/* START LIVE VOICE */
 
 async function startVoice(){
 
@@ -432,7 +445,41 @@ console.log(
 "Voice Connected 🎤"
 );
 
-/* START DETECT */
+peerConnection =
+new RTCPeerConnection(
+servers
+);
+
+localStream
+.getTracks()
+.forEach(track=>{
+
+peerConnection
+.addTrack(
+track,
+localStream
+);
+
+});
+
+peerConnection.ontrack =
+(event)=>{
+
+let audio =
+document.createElement(
+"audio"
+);
+
+audio.srcObject =
+event.streams[0];
+
+audio.autoplay = true;
+
+document.body.appendChild(
+audio
+);
+
+};
 
 startSpeakingDetect();
 
