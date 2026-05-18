@@ -141,6 +141,7 @@ border-radius:22px;
 margin-top:15px;
 cursor:pointer;
 transition:0.2s;
+border:1px solid #222;
 }
 
 .group-box:hover{
@@ -169,6 +170,7 @@ font-size:13px;
 margin-top:10px;
 font-size:14px;
 color:#aaa;
+line-height:1.5;
 }
 
 .group-bottom{
@@ -196,6 +198,12 @@ font-size:13px;
 color:#888;
 }
 
+.member-count{
+margin-top:10px;
+font-size:13px;
+color:#ccc;
+}
+
 /* POPUP */
 
 .popup{
@@ -209,10 +217,12 @@ display:none;
 justify-content:center;
 align-items:center;
 z-index:99999;
+padding:15px;
 }
 
 .popup-box{
-width:90%;
+width:100%;
+max-width:450px;
 background:#111;
 padding:25px;
 border-radius:25px;
@@ -236,6 +246,11 @@ background:#222;
 color:white;
 font-size:16px;
 outline:none;
+}
+
+.popup-box textarea{
+height:100px;
+resize:none;
 }
 
 .popup-btn{
@@ -487,22 +502,22 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
 
 apiKey:
-"YOUR_API_KEY",
+"AIzaSyCM2CUrWEyad180qCy-34PC4A0HOLaSWsg",
 
 authDomain:
-"YOUR_AUTH_DOMAIN",
+"nammaapp-e8b13.firebaseapp.com",
 
 projectId:
-"YOUR_PROJECT_ID",
+"nammaapp-e8b13",
 
 storageBucket:
-"YOUR_STORAGE_BUCKET",
+"nammaapp-e8b13.firebasestorage.app",
 
 messagingSenderId:
-"YOUR_SENDER_ID",
+"1068448599469",
 
 appId:
-"YOUR_APP_ID"
+"1:1068448599469:web:8f02d17e456597de75e524"
 
 };
 
@@ -567,21 +582,33 @@ return;
 await addDoc(
 collection(db,"groups"),
 {
-name:name,
-desc:desc,
-type:type,
+
+groupName:name,
+
+groupDesc:desc,
+
+groupType:type,
+
 seatMode:seatMode,
-owner:
+
+ownerName:
 localStorage.getItem(
 "username"
-) || "Guest",
-created:Date.now(),
-online:1
+)
+||
+"Guest",
+
+onlineUsers:1,
+
+totalUsers:1,
+
+created:Date.now()
+
 }
 );
 
 alert(
-"Group Created 🔥"
+"🔥 Group Created"
 );
 
 closePopup();
@@ -609,14 +636,14 @@ html += `
 
 <div
 class="group-box"
-data-name="${data.name}"
-onclick="openRoom('${data.name}')"
+data-name="${data.groupName}"
+onclick="openRoom('${data.groupName}')"
 >
 
 <div class="group-top">
 
 <div class="group-name">
-🔥 ${data.name}
+🔥 ${data.groupName}
 </div>
 
 <div class="live-badge">
@@ -626,23 +653,27 @@ LIVE
 </div>
 
 <div class="group-desc">
-${data.desc || "Tamil Live Room"}
+${data.groupDesc || "Tamil Live Room"}
 </div>
 
 <div class="host-name">
-👑 Host : ${data.owner}
+👑 Owner : ${data.ownerName}
 </div>
 
 <div class="group-bottom">
 
 <div class="online-count">
-🟢 ${data.online} Online
+🟢 ${data.onlineUsers} Online
 </div>
 
 <div class="room-type">
-${data.type}
+🔒 ${data.groupType}
 </div>
 
+</div>
+
+<div class="member-count">
+👥 ${data.totalUsers} Members
 </div>
 
 </div>
@@ -714,5 +745,4 @@ window.location.href =
 </script>
 
 </body>
-
 </html>
